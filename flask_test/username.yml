@@ -1,0 +1,13 @@
+openapi: 3.0.0
+tags:
+  - name: Username
+get:
+  
+  description: 'This method returns the username that was input'
+responses:
+    '200':
+      description: Successful response
+    '400':
+      description: Bad Request
+    '500':
+      description: Internal Server Error

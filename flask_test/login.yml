@@ -1,0 +1,16 @@
+openapi: 3.0.0
+tags:
+  - name: Login
+get:
+  
+  description: 'It will suggest you use a POST'
+post:
+
+  description: "You will get a JSON as response"
+responses:
+    '200':
+      description: Successful response
+    '400':
+      description: Bad Request
+    '500':
+      description: Internal Server Error

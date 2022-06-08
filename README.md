@@ -3,7 +3,7 @@
 ## Roadmap
 
 - [X] Swagger / OpenAPI integration
-- [ ] Configuration file for each environment
+- [X] Configuration file for each environment
 - [ ] Enable/Disable Swagger
 - [ ] API Port configuration
 - [ ] Log Configuration
@@ -84,5 +84,13 @@ uvicorn main:app --reload
 You can use Pydantic Settings to handle the settings or configurations for your application, with all the power of Pydantic models. The project uses Dependency Injection for managing dependencies across the application and easy mocking for testing.
 
 **Create an **_.env_** file for each environment configuration**. The use of @lru_cache() lets you avoid reading the dotenv file again and again for each request, while allowing you to override it during testing.
+
+Even when using a dotenv file, the application will still read environment variables as well as the dotenv file, **environment variables will always take priority over values loaded from a dotenv file**.
+
+You can also specify the environment when launching the server. Corresponding **_.env_** file will be automatically loaded.
+
+```
+ENV=PROD uvicorn main:app --reload
+```
 
 Refer to [this link](https://fastapi.tiangolo.com/advanced/settings/) for more information on how to manage the configuration with FastAPI.

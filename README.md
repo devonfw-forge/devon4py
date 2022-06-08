@@ -5,7 +5,7 @@
 - [X] Swagger / OpenAPI integration
 - [X] Configuration file for each environment
 - [X] Enable/Disable Swagger
-- [ ] API Port configuration
+- [X] API Port configuration
 - [ ] Log Configuration
 - [ ] Database Configuration
 - [ ] Swagger Configuration
@@ -79,6 +79,12 @@ uvicorn main:app --reload
 - **_app_**: the object created inside of main.py with the line app = FastAPI().
 - _**--reload**_: make the server restart after code changes. Only use for development.
 
+You can also launch the uvicorn server programmatically running directly the main.py file.
+
+```
+python main.py
+```
+
 ## Environment Configuration
 
 You can use Pydantic Settings to handle the settings or configurations for your application, with all the power of Pydantic models. The project uses Dependency Injection for managing dependencies across the application and easy mocking for testing.
@@ -91,6 +97,12 @@ You can also specify the environment when launching the server. Corresponding **
 
 ```
 ENV=PROD uvicorn main:app --reload
+ENV=PROD python main.py
 ```
 
-Refer to [this link](https://fastapi.tiangolo.com/advanced/settings/) for more information on how to manage the configuration with FastAPI.
+### Host & Port Configuration
+The Port and Hosting configuration can be set directly on the **.env** file if launching the main.py file.
+
+However, this configuration is related with the uvicorn server itself and can also be set with the _**--port [int]**_ flag. 
+
+Refer to the [uvicorn documentation](https://www.uvicorn.org/settings/) for more info.

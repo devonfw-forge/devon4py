@@ -3,9 +3,10 @@ import os
 from functools import lru_cache
 
 
-class Settings(BaseSettings):
+class GlobalSettings(BaseSettings):
     app_name: str = "My Awesome API"
     environment: str = "TEST"
+    port: int = 80
     swagger_path: str = "docs"
 
     class Config:
@@ -13,10 +14,10 @@ class Settings(BaseSettings):
 
 
 @lru_cache()
-def get_settings():
+def get_global_settings():
     # Import + Cache settings (with lru_cache)
     env = os.environ.get("ENV")
     if env:
-        return Settings(_env_file="{}.env".format(env))
+        return GlobalSettings(_env_file="{}.env".format(env))
     else:
-        return Settings()
+        return GlobalSettings()

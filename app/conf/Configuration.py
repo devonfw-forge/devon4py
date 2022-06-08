@@ -6,6 +6,7 @@ from functools import lru_cache
 class Settings(BaseSettings):
     app_name: str = "My Awesome API"
     environment: str = "TEST"
+    swagger_path: str = "docs"
 
     class Config:
         env_file = "TEST.env"

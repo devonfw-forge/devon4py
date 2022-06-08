@@ -4,7 +4,7 @@
 
 - [X] Swagger / OpenAPI integration
 - [X] Configuration file for each environment
-- [ ] Enable/Disable Swagger
+- [X] Enable/Disable Swagger
 - [ ] API Port configuration
 - [ ] Log Configuration
 - [ ] Database Configuration

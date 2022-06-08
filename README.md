@@ -44,6 +44,11 @@ The key features are:
 
 FastAPI works on **_Uvicorn_**, an ASGI web server implementation for Python.
 
+Unlike Flask, FastAPI is an ASGI (Asynchronous Server Gateway Interface) framework, brings together Starlette, Pydantic, OpenAPI, and JSON Schema.
+Under the hood, FastAPI uses Pydantic for data validation and Starlette for tooling, making it blazing fast compared to Flask, giving comparable performance to high-speed web APIs in Node or Go.
+Starlette + Uvicorn offers async request capability, something that Flask lacks.
+With Pydantic along with type hints, you get a nice editor experience with autocompletion. You also get data validation, serialization and deserialization (for building an API), and automatic documentation (via JSON Schema and OpenAPI).
+
 ### Environment Configuration
 
 You can use Pydantic Settings to handle the settings or configurations for your application, with all the power of Pydantic models. The project uses Dependency Injection for managing dependencies across the application and easy mocking for testing.

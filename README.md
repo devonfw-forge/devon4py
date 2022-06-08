@@ -49,7 +49,37 @@ Under the hood, FastAPI uses Pydantic for data validation and Starlette for tool
 Starlette + Uvicorn offers async request capability, something that Flask lacks.
 With Pydantic along with type hints, you get a nice editor experience with autocompletion. You also get data validation, serialization and deserialization (for building an API), and automatic documentation (via JSON Schema and OpenAPI).
 
-### Environment Configuration
+# Run the application
+In this section you will find an overview on how to execute and configure the project.
+
+## Dependencies
+Dependencies are automatically managed by **Poetry**
+
+To install dependencies run
+```bash
+poetry install
+```
+in same folder where your `.toml` file is located. 
+Poetry will take care of:
+- Installing the required Python interpreter 
+- Installing all the libraries and modules 
+- Creating the virtual environment for you
+
+Refer to [this link](https://www.jetbrains.com/help/pycharm/poetry.html) to configure Poetry on PyCharm
+
+## Running on local
+
+Start the uvicorn live server with the command:
+
+```
+uvicorn main:app --reload
+```
+
+- **_main_**: the file main.py (the Python "module").
+- **_app_**: the object created inside of main.py with the line app = FastAPI().
+- _**--reload**_: make the server restart after code changes. Only use for development.
+
+## Environment Configuration
 
 You can use Pydantic Settings to handle the settings or configurations for your application, with all the power of Pydantic models. The project uses Dependency Injection for managing dependencies across the application and easy mocking for testing.
 

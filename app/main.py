@@ -1,13 +1,19 @@
 import uvicorn
 from fastapi import Depends, FastAPI
-from conf.Configuration import GlobalSettings, get_global_settings
+from core.Configuration import GlobalSettings, get_global_settings, get_app, get_log_config
+import logging
 
-app_settings = get_global_settings()
-app = FastAPI(docs_url=app_settings.swagger_path)
+# Init APP with Configuration
+app = get_app()
+# Init Logger for this Class
+logger = logging.getLogger(__name__)
 
 
 @app.get("/info")
 async def info(settings: GlobalSettings = Depends(get_global_settings)):
+    logger.info("TEST INFO")
+    logger.error("TEST ERROR")
+    logger.debug("TEST DEBUG")
     return {
         "app_name": settings.app_name,
         "environment": settings.environment,
@@ -16,4 +22,7 @@ async def info(settings: GlobalSettings = Depends(get_global_settings)):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=app_settings.port)
+    global_settings = get_global_settings()
+    logging_settings = get_log_config()
+    uvicorn.run(app, host="0.0.0.0", port=global_settings.port, log_config=logging_settings)
+

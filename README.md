@@ -6,7 +6,7 @@
 - [X] Configuration file for each environment
 - [X] Enable/Disable Swagger
 - [X] API Port configuration
-- [ ] Log Configuration
+- [X] Log Configuration
 - [ ] Database Configuration
 - [ ] Swagger Configuration
 - [ ] JWT Configuration
@@ -106,3 +106,17 @@ The Port and Hosting configuration can be set directly on the **.env** file if l
 However, this configuration is related with the uvicorn server itself and can also be set with the _**--port [int]**_ flag. 
 
 Refer to the [uvicorn documentation](https://www.uvicorn.org/settings/) for more info.
+
+### Logging Configuration
+The application uses the default logging module.
+
+To use it inside an specific module init it first with the command:
+
+```
+logger = logging.getLogger(__name__)
+```
+
+You can use the __name__ variable to take the current file name as the default or specify a custom module name manually.
+
+Configure the logging properties in the **_logging.yaml_** file. 
+You can find more information in the [logging](https://docs.python.org/3/library/logging.html#module-logging) documentation.

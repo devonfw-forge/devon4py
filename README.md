@@ -49,6 +49,35 @@ Under the hood, FastAPI uses Pydantic for data validation and Starlette for tool
 Starlette + Uvicorn offers async request capability, something that Flask lacks.
 With Pydantic along with type hints, you get a nice editor experience with autocompletion. You also get data validation, serialization and deserialization (for building an API), and automatic documentation (via JSON Schema and OpenAPI).
 
+
+### Unlimited "plug-ins"
+Or in other way, no need for them, import and use the code you need.
+
+Any integration is designed to be so simple to use (with dependencies) that you can create a "plug-in" for your application in 2 lines of code using the same structure and syntax used for your path operations.
+
+### Tested
+- 100% test coverage.
+- 100% type annotated code base.
+- Used in production applications.
+
+### Based on Starlette
+
+FastAPI is fully compatible with (and based on) [Starlette](https://www.starlette.io/). So, any additional Starlette code you have, will also work.
+
+FastAPI is actually a sub-class of Starlette. So, if you already know or use Starlette, most of the functionality will work the same way.
+
+With FastAPI you get all of Starlette's features (as FastAPI is just Starlette on steroids):
+
+- Seriously impressive performance. It is one of the fastest Python frameworks available, on par with NodeJS and Go.
+- WebSocket support.
+- In-process background tasks.
+- Startup and shutdown events.
+- Test client built on requests.
+- CORS, GZip, Static Files, Streaming responses.
+- Session and Cookie support.
+- 100% test coverage.
+- 100% type annotated codebase.
+
 # Run the application
 In this section you will find an overview on how to execute and configure the project.
 
@@ -95,6 +124,8 @@ Even when using a dotenv file, the application will still read environment varia
 
 You can also specify the environment when launching the server. Corresponding **_.env_** file will be automatically loaded.
 
+Settings and environment variables are managed by **Pydantic**, refer to [the documentation](https://pydantic-docs.helpmanual.io/usage/settings/) for more info.
+
 ```
 ENV=PROD uvicorn main:app --reload
 ENV=PROD python main.py
@@ -108,7 +139,7 @@ However, this configuration is related with the uvicorn server itself and can al
 Refer to the [uvicorn documentation](https://www.uvicorn.org/settings/) for more info.
 
 ### Logging Configuration
-The application uses the default logging module.
+The application uses the default **_logging_** module.
 
 To use it inside an specific module init it first with the command:
 
@@ -120,3 +151,6 @@ You can use the __name__ variable to take the current file name as the default o
 
 Configure the logging properties in the **_logging.yaml_** file. 
 You can find more information in the [logging](https://docs.python.org/3/library/logging.html#module-logging) documentation.
+
+## Database Management
+

@@ -1,6 +1,7 @@
 import uvicorn
 from fastapi import Depends, FastAPI
-from core.Configuration import GlobalSettings, get_global_settings, get_app, get_log_config
+from core.Configuration import GlobalSettings, get_global_settings, get_app, get_log_config, DatabaseSettings, \
+    get_db_settings
 import logging
 
 # Init APP with Configuration
@@ -10,7 +11,8 @@ logger = logging.getLogger(__name__)
 
 
 @app.get("/info")
-async def info(settings: GlobalSettings = Depends(get_global_settings)):
+async def info(settings: GlobalSettings = Depends(get_global_settings),
+               db: DatabaseSettings = Depends(get_db_settings)):
     logger.info("TEST INFO")
     logger.error("TEST ERROR")
     logger.debug("TEST DEBUG")

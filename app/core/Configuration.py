@@ -17,7 +17,6 @@ class GlobalSettings(BaseSettings):
         env_file = "TEST.env"
 
 
-# Scheme: "postgres+psycopg2://<USERNAME>:<PASSWORD>@<IP_ADDRESS>:<PORT>/<DATABASE_NAME>"
 class DatabaseSettings(BaseSettings):
     type: str
     username: Optional[str]
@@ -25,6 +24,7 @@ class DatabaseSettings(BaseSettings):
     host: Optional[str]
     port: Optional[int] = None
     database: Optional[str]
+    enable_logs = False
 
     class Config:
         env_prefix = "DB_"

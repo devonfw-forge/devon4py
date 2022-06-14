@@ -7,6 +7,7 @@ authors = ["LuisPi <luis.pinon-ferrer@capgemini.com>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 fastapi = {extras = ["all"], version = "^0.78.0"}
+sqlmodel = "^0.0.6"
 
 [tool.poetry.dev-dependencies]
 

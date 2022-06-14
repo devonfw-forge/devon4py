@@ -7,14 +7,15 @@
 - [X] Enable/Disable Swagger
 - [X] API Port configuration
 - [X] Log Configuration
-- [ ] Database Configuration
+- [X] Database Configuration
+- [ ] ASYNC Database Configuration
 - [ ] Swagger Configuration
 - [ ] JWT Configuration
 - [ ] CORS Configuration
 - [ ] Global Exception Management
 - [ ] DB Entity Generation
 - [ ] Code generation using Templates
-- [ ] Log to files integration
+- [X] Log to files integration
 - [ ] Log to Database integration
 - [ ] Log to GrayLog integration
 - [ ] Log to Splunk integration

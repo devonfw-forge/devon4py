@@ -130,3 +130,6 @@ dmypy.json
 
 # Log files
 *.log
+
+# DB Files
+*.db

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Type, Generic
 
 import yaml
 from fastapi import FastAPI
@@ -11,7 +11,7 @@ class GlobalSettings(BaseSettings):
     app_name: str = "My Awesome API"
     environment: str = "TEST"
     port: int = 80
-    swagger_path: str = "docs"
+    swagger_path: str = "/docs"
 
     class Config:
         env_file = "TEST.env"
@@ -25,13 +25,14 @@ class DatabaseSettings(BaseSettings):
     port: Optional[int] = None
     database: Optional[str]
     enable_logs = False
+    pool_size = 5
 
     class Config:
         env_prefix = "DB_"
         env_file = "TEST.env"
 
 
-def __load_env_file_on_settings(settings):
+def __load_env_file_on_settings(settings: Type[BaseSettings]):
     env = os.environ.get("ENV")
     if env:
         return settings(_env_file="{}.env".format(env))
@@ -40,12 +41,12 @@ def __load_env_file_on_settings(settings):
 
 
 @lru_cache()
-def get_global_settings():
+def get_global_settings() -> GlobalSettings:
     return __load_env_file_on_settings(GlobalSettings)
 
 
 @lru_cache()
-def get_db_settings():
+def get_db_settings() -> DatabaseSettings:
     return __load_env_file_on_settings(DatabaseSettings)
 
 
@@ -56,7 +57,9 @@ def get_log_config():
         return log_config
 
 
-def get_app():
+def get_api():
     app_settings = get_global_settings()
-    app = FastAPI(docs_url=app_settings.swagger_path)
-    return app
+    from app.controllers import api_router
+    api = FastAPI(docs_url=app_settings.swagger_path)
+    api.include_router(api_router)
+    return api

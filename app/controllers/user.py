@@ -2,7 +2,6 @@ import logging
 
 from fastapi import APIRouter, Depends
 
-from app.core.configuration import GlobalSettings, get_global_settings
 from app.services.user import UserService
 
 router = APIRouter(prefix="/users")

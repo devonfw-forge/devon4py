@@ -1,13 +1,10 @@
-from functools import lru_cache
-from typing import Generator
-
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.future import Engine
 from sqlalchemy.orm import sessionmaker
+from sqlmodel import SQLModel, create_engine
 
 from .configuration import DatabaseSettings, get_db_settings
-from sqlmodel import Field, Session, SQLModel, create_engine
 
 
 def get_db_uri(db_settings: DatabaseSettings = Depends(get_db_settings)) -> str:

@@ -10,9 +10,9 @@
 - [X] Database Configuration
 - [ ] ASYNC Database Configuration
 - [X] Swagger Configuration
-- [ ] JWT / Keycloak Integration
+- [X] JWT / Keycloak Integration
 - [X] CORS Configuration
-- [ ] Global Exception Management
+- [X] Global Exception Management
 - [ ] DB Entity Generation
 - [ ] Code generation using Templates
 - [X] Log to files integration

@@ -10,6 +10,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 # Configuration Objects Definitions
+from app.core.exception_handlers import init_exception_handlers
+
 
 class GlobalSettings(BaseSettings):
     app_name: str = "My Awesome API"
@@ -131,4 +133,6 @@ def get_api():
     # Include all Routers
     from app.controllers import api_router
     api.include_router(api_router)
+    # Init exception Handlers
+    init_exception_handlers(api)
     return api

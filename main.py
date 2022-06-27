@@ -6,6 +6,8 @@ from app.core.configuration import get_global_settings, get_api, get_log_config,
 from app.core.database import init_db_entities
 
 # Init APP with Configuration
+from app.exceptions.http import NotFoundException
+from app.exceptions.runtime import UnexpectedStatusException
 from app.services.user import UserService
 
 api = get_api()

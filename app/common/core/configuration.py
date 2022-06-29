@@ -1,4 +1,4 @@
-from typing import Optional, Type, Generic, Union, List
+from typing import Optional, Type, List
 
 import yaml
 from fastapi import FastAPI
@@ -10,7 +10,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 # Configuration Objects Definitions
-from app.core.exception_handlers import init_exception_handlers
+from app.common.core.exception_handlers import init_exception_handlers
+from app.common.infra.keycloak import get_idp, KeycloakSettings
 
 
 class GlobalSettings(BaseSettings):
@@ -50,19 +51,6 @@ class DatabaseSettings(BaseSettings):
         env_file = "TEST.env"
 
 
-class KeycloakSettings(BaseSettings):
-    auth_server: Optional[str]
-    client_id: Optional[str]
-    client_secret: Optional[str]
-    admin_client_secret: Optional[str]
-    realm: Optional[str]
-    callback_uri: Optional[str]
-
-    class Config:
-        env_prefix = "KEYCLOAK_"
-        env_file = "TEST.env"
-
-
 # Utils to load Configurations
 
 def __load_env_file_on_settings(settings: Type[BaseSettings]):
@@ -95,28 +83,10 @@ def get_log_config():
         return log_config
 
 
-def get_idp():
-    print("Init Keycloak")
-    keycloak_settings = get_keycloak_settings()
-    # Check if configuration is defined to use Keycloak IDP
-    if keycloak_settings.auth_server is None or keycloak_settings.realm is None:
-        return None
-    # Configure Keycloak Authentication
-    idp = FastAPIKeycloak(
-        server_url=keycloak_settings.auth_server,
-        client_id=keycloak_settings.client_id,
-        client_secret=keycloak_settings.client_secret,
-        admin_client_secret=keycloak_settings.admin_client_secret,
-        realm=keycloak_settings.realm,
-        callback_uri=keycloak_settings.callback_uri
-    )
-    return idp
-
-
 def get_api():
     app_settings = get_global_settings()
     api = FastAPI(docs_url=app_settings.swagger_path, title=app_settings.app_name)
-    idp = get_idp()
+    idp = get_idp(keycloak_settings=get_keycloak_settings())
     if idp is not None:
         # Enable authentication layer to swagger endpoints
         idp.add_swagger_config(api)
@@ -130,9 +100,10 @@ def get_api():
             allow_headers=["*"],
             expose_headers=["*"]
         )
-    # Include all Routers
-    from app.controllers import api_router
-    api.include_router(api_router)
+    # Include auth router
+    if idp is not None:
+        from app.common.controllers import auth_router
+        api.include_router(auth_router)
     # Init exception Handlers
     init_exception_handlers(api)
     return api

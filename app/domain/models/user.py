@@ -2,10 +2,10 @@ from datetime import datetime
 from enum import Enum
 
 from sqlmodel import Field, SQLModel, Relationship, Column, DateTime
-from app.models.links import LinkGroupUser
+from app.domain.models.links import LinkGroupUser
 from typing import List, Optional
 from pydantic import EmailStr, BaseModel
-from app.models.base import BaseUUIDModel
+from app.common.base.base_entity import BaseUUIDModel
 from uuid import UUID
 
 # DB ENTITY

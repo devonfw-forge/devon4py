@@ -3,11 +3,9 @@ from typing import Optional, List
 from fastapi import APIRouter, Depends, Body, Query
 from fastapi_keycloak import HTTPMethod, KeycloakUser
 from pydantic import SecretStr
+from app.common import get_user, idp
 
-from app.controllers.__common__ import get_user, idp
-
-router = APIRouter(prefix="/idp", dependencies=[Depends(get_user)])  # Protect all the paths with user authentication
-
+router = APIRouter(prefix="/idp", dependencies=[Depends(get_user())])  # Protect all the paths with user authentication
 
 #################################
 # IDP Admin Router

@@ -40,7 +40,6 @@ def get_async_db_engine(settings: DatabaseSettings = Depends(get_db_settings), d
 
 
 def init_db_entities(db: DatabaseSettings):
-    import app.models
     engine = get_db_engine(db, get_db_uri(db))
     SQLModel.metadata.create_all(engine)
 

@@ -1,10 +1,10 @@
 from sqlmodel import Field, Relationship, SQLModel
 from typing import List, Optional
-from app.models.links import LinkGroupUser
-from app.models.base import BaseUUIDModel
+from app.domain.models.links import LinkGroupUser
+from app.common.base.base_entity import BaseUUIDModel
 from uuid import UUID
 
-from app.models.user import User
+from app.domain.models.user import User
 
 
 class GroupBase(SQLModel):

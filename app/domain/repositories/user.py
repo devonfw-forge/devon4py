@@ -1,16 +1,14 @@
 from datetime import datetime
 from typing import Optional
-from uuid import UUID
 
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
-from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.core.database import get_db_session_factory
-from app.models import User
-from app.models.user import UserCreateRequest
-from app.repositories.base import BaseRepository
+from app.common.base.base_repository import BaseRepository
+from app.common.core.database import get_db_session_factory
+from app.domain.models import User
+from app.domain.models.user import UserCreateRequest
 
 
 class UserRepository(BaseRepository[User]):

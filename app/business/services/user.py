@@ -2,9 +2,9 @@ from typing import Optional
 
 from fastapi import Depends
 
-from app.exceptions.http import NotFoundException
-from app.models import User
-from app.repositories.user import get_user_repository, UserRepository
+from app.common.exceptions.http import NotFoundException
+from app.domain.models import User
+from app.domain.repositories.user import get_user_repository, UserRepository
 
 
 class UserService:

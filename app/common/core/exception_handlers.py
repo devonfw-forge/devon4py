@@ -4,8 +4,8 @@ from fastapi import FastAPI
 from starlette.requests import Request
 from starlette.responses import PlainTextResponse
 
-from app.exceptions.http import DevonHttpException
-from app.exceptions.runtime import DevonCustomException
+from app.common.exceptions.http import DevonHttpException
+from app.common.exceptions.runtime import DevonCustomException
 
 logger = logging.getLogger(__name__)
 

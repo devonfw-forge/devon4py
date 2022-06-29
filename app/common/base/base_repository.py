@@ -3,11 +3,10 @@ from uuid import UUID
 
 from fastapi import Depends
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload, sessionmaker
 from sqlmodel import SQLModel
 
-from app.core.database import get_db_session_factory
+from app.common.core.database import get_db_session_factory
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
 

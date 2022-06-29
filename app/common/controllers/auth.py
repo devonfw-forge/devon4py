@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from fastapi_keycloak import OIDCUser, UsernamePassword
 from starlette.responses import RedirectResponse
 
-from app.controllers.__common__ import get_user, idp
+from app.common import get_user, idp
 
 logger = logging.getLogger(__name__)
 
@@ -21,12 +21,12 @@ def root():
 
 
 @router.get("/user")  # Requires logged in
-def current_users(user: OIDCUser = Depends(get_user)):
+def current_users(user: OIDCUser = Depends(get_user())):
     return user
 
 
 @router.get("/current_user/roles")
-def get_current_users_roles(user: OIDCUser = Depends(get_user)):
+def get_current_users_roles(user: OIDCUser = Depends(get_user())):
     return user.roles
 
 

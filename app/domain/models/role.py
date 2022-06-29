@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Relationship
 from typing import List
-from app.models.base import BaseUUIDModel
+from app.common.base.base_entity import BaseUUIDModel
 
 
 class RoleBase(SQLModel):

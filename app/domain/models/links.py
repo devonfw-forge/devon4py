@@ -1,7 +1,8 @@
 from sqlmodel import Field
 from typing import Optional
-from app.models.base import BaseUUIDModel
 from uuid import UUID
+
+from app.common.base.base_entity import BaseUUIDModel
 
 
 class LinkGroupUser(BaseUUIDModel, table=True):

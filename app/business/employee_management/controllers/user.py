@@ -2,7 +2,7 @@ import logging
 
 from fastapi import APIRouter, Depends
 
-from app.business.services.user import UserService
+from app.business.employee_management.services.user import UserService
 
 router = APIRouter(prefix="/users")
 

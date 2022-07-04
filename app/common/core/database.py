@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.future import Engine
 from sqlalchemy.orm import sessionmaker
-from sqlmodel import SQLModel, create_engine
+from sqlmodel import SQLModel, create_engine, Session
 
 from .configuration import DatabaseSettings, get_db_settings
 
@@ -39,16 +39,26 @@ def get_async_db_engine(settings: DatabaseSettings = Depends(get_db_settings), d
                                future=True, pool_pre_ping=True)
 
 
+def get_session(engine: Engine = Depends(get_db_engine)):
+    sess = None
+    try:
+        sess = Session(engine)
+        yield sess
+    finally:
+        if sess:
+            sess.close()
+
+
 def init_db_entities(db: DatabaseSettings):
     engine = get_db_engine(db, get_db_uri(db))
     SQLModel.metadata.create_all(engine)
 
-
-def get_db_session_factory(engine: Engine = Depends(get_async_db_engine)):
-    """
-        Generates a session factory from the configured SQL Engine
-    """
-    return sessionmaker(autocommit=False, class_=AsyncSession, autoflush=False, bind=engine)
+#
+# def get_db_session_factory(engine: Engine = Depends(get_async_db_engine)):
+#     """
+#         Generates a session factory from the configured SQL Engine
+#     """
+#     return sessionmaker(autocommit=False, class_=AsyncSession, autoflush=False, bind=engine)
 
 #
 # def get_db(session_factory: sessionmaker = Depends(get_session_factory)) -> Generator:

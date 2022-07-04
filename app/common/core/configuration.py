@@ -1,7 +1,7 @@
 from typing import Optional, Type, List
 
 import yaml
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from fastapi_keycloak import FastAPIKeycloak
 from pydantic import BaseSettings, AnyHttpUrl, validator
 import os
@@ -83,7 +83,7 @@ def get_log_config():
         return log_config
 
 
-def get_api():
+def get_api(routers: List[APIRouter]):
     app_settings = get_global_settings()
     api = FastAPI(docs_url=app_settings.swagger_path, title=app_settings.app_name)
     idp = get_idp(keycloak_settings=get_keycloak_settings())
@@ -104,6 +104,9 @@ def get_api():
     if idp is not None:
         from app.common.controllers import auth_router
         api.include_router(auth_router)
+    # Include selected routers
+    for r in routers:
+        api.include_router(r)
     # Init exception Handlers
     init_exception_handlers(api)
     return api

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.business.controllers import user
+from app.business.employee_management.controllers import user
 
 # Include all routers here
 api_router = APIRouter()

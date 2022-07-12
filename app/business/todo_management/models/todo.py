@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Any
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -18,3 +18,8 @@ class TodoDto(TodoID, CreateTodoRequest):
 
 class PendingTodosResponse(BaseModel):
     todos: List[TodoDto]
+
+
+class EventPublishRequest(BaseModel):
+    data: Any
+    event: None | str

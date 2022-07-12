@@ -11,6 +11,7 @@ sqlmodel = "^0.0.6"
 requests = "^2.28.0"
 aiosqlite = "^0.17.0"
 fastapi_keycloak = "^1.0.6"
+sse-starlette = "^0.10.3"
 
 [tool.poetry.dev-dependencies]
 

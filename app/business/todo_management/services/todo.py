@@ -4,19 +4,15 @@ from fastapi import Depends
 
 from app.business.todo_management.models.todo import TodoDto, CreateTodoRequest
 from app.domain.models.todo import Todo
-from app.domain.repositories.todo import TodoRepository, get_todo_repository
+from app.domain.repositories.todo import TodoSQLRepository, get_todo_repository
 
 
 def parse_to_dto(todo_entity: Todo):
-    return TodoDto(
-        id=todo_entity.id,
-        description=todo_entity.description,
-        done=todo_entity.done
-    )
+    return TodoDto(**todo_entity.dict())
 
 
 class TodoService:
-    def __init__(self, repository: TodoRepository = Depends(get_todo_repository)):
+    def __init__(self, repository: TodoSQLRepository = Depends(get_todo_repository)):
         self.todo_repo = repository
 
     def get_pending_todos(self) -> List[TodoDto]:

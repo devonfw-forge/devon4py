@@ -5,13 +5,13 @@ from fastapi import Depends
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import select, Session
 
-from app.common.base.base_repository import BaseRepository
-from app.common.core.database import get_session
+from app.common.base.base_repository import BaseSQLRepository
 from app.common.exceptions.http import NotFoundException
+from app.common.infra.sql_adaptors import get_session
 from app.domain.models.todo import Todo
 
 
-class TodoRepository(BaseRepository[Todo]):
+class TodoSQLRepository(BaseSQLRepository[Todo]):
 
     def create(self, *, description: str) -> Todo:
         new_todo = Todo(description=description)
@@ -37,4 +37,4 @@ class TodoRepository(BaseRepository[Todo]):
 
 
 def get_todo_repository(session: Session = Depends(get_session)):
-    return TodoRepository(Todo, session)
+    return TodoSQLRepository(Todo, session)

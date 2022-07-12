@@ -1,18 +1,17 @@
-from typing import Generic, TypeVar, Type, Union, Optional, Callable
+from typing import Generic, TypeVar, Type, Union, Optional
 from uuid import UUID
 
 from fastapi import Depends
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload, sessionmaker
+from sqlalchemy.orm import selectinload
 from sqlmodel import SQLModel, Session
-from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.common.core.database import get_session
+from app.common.infra.sql_adaptors import get_session
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
 
 
-class BaseRepository(Generic[ModelType]):
+class BaseSQLRepository(Generic[ModelType]):
 
     def __init__(self, model: Type[ModelType], session: Session = Depends(get_session)):
         """

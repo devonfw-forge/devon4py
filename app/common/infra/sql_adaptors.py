@@ -1,10 +1,33 @@
-from fastapi import Depends
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.future import Engine
-from sqlalchemy.orm import sessionmaker
-from sqlmodel import SQLModel, create_engine, Session
+from functools import lru_cache
+from typing import Optional
 
-from .configuration import DatabaseSettings, get_db_settings
+from fastapi import Depends
+from pydantic import BaseSettings
+from sqlalchemy.engine import Engine
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlmodel import Session, SQLModel, create_engine
+
+from app.common.core.configuration import __load_env_file_on_settings
+
+
+class DatabaseSettings(BaseSettings):
+    type: str
+    username: Optional[str]
+    password: Optional[str]
+    host: Optional[str]
+    port: Optional[int] = None
+    database: Optional[str]
+    enable_logs = False
+    pool_size = 5
+
+    class Config:
+        env_prefix = "DB_"
+        env_file = "TEST.env"
+
+
+@lru_cache()
+def get_db_settings() -> DatabaseSettings:
+    return __load_env_file_on_settings(DatabaseSettings)
 
 
 def get_db_uri(db_settings: DatabaseSettings = Depends(get_db_settings)) -> str:
@@ -30,7 +53,8 @@ def get_async_db_uri(db_settings: DatabaseSettings = Depends(get_db_settings)) -
 
 
 def get_db_engine(settings: DatabaseSettings = Depends(get_db_settings), db_uri: str = Depends(get_db_uri)) -> Engine:
-    return create_engine(db_uri, echo=settings.enable_logs, echo_pool=settings.enable_logs, pool_pre_ping=True)
+    return create_engine(db_uri, echo=settings.enable_logs, echo_pool=settings.enable_logs, pool_pre_ping=True,
+                         connect_args={"check_same_thread": False})
 
 
 def get_async_db_engine(settings: DatabaseSettings = Depends(get_db_settings), db_uri: str = Depends(get_async_db_uri)):
@@ -52,21 +76,3 @@ def get_session(engine: Engine = Depends(get_db_engine)):
 def init_db_entities(db: DatabaseSettings):
     engine = get_db_engine(db, get_db_uri(db))
     SQLModel.metadata.create_all(engine)
-
-#
-# def get_db_session_factory(engine: Engine = Depends(get_async_db_engine)):
-#     """
-#         Generates a session factory from the configured SQL Engine
-#     """
-#     return sessionmaker(autocommit=False, class_=AsyncSession, autoflush=False, bind=engine)
-
-#
-# def get_db(session_factory: sessionmaker = Depends(get_session_factory)) -> Generator:
-#     """
-#         Generates a database session from the configured factory // TODO: Problem with async close
-#     """
-#     try:
-#         db = session_factory()
-#         yield db
-#     finally:
-#         db.close()

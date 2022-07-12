@@ -4,13 +4,13 @@ from fastapi import Depends
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import select, Session
 
-from app.common.base.base_repository import BaseRepository
-from app.common.core.database import get_session
+from app.common.base.base_repository import BaseSQLRepository
 from app.common.exceptions.http import NotFoundException
+from app.common.infra import get_session
 from app.domain.models.employee import Employee
 
 
-class EmployeeRepository(BaseRepository[Employee]):
+class EmployeeSQLRepository(BaseSQLRepository[Employee]):
 
     def get_by_email(self, *, email: str) -> Optional[Employee]:
         employees = self.session.exec(select(Employee).where(Employee.mail == email))
@@ -28,4 +28,4 @@ class EmployeeRepository(BaseRepository[Employee]):
 
 
 def get_employee_repository(session: Session = Depends(get_session)):
-    return EmployeeRepository(Employee, session)
+    return EmployeeSQLRepository(Employee, session)

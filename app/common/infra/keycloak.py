@@ -1,7 +1,10 @@
+from functools import lru_cache
 from typing import Optional
 
-from fastapi_keycloak import FastAPIKeycloak
+from fastapi import FastAPI
 from pydantic import BaseSettings
+
+from app.common.core.configuration import __load_env_file_on_settings
 
 
 class KeycloakSettings(BaseSettings):
@@ -17,21 +20,16 @@ class KeycloakSettings(BaseSettings):
         env_file = "TEST.env"
 
 
-def get_idp(keycloak_settings: KeycloakSettings):
-    # Check if configuration is defined to use Keycloak IDP
-    if keycloak_settings.auth_server is None or keycloak_settings.realm is None:
-        return None
-    try:
-        # Configure Keycloak Authentication
-        idp = FastAPIKeycloak(
-            server_url=keycloak_settings.auth_server,
-            client_id=keycloak_settings.client_id,
-            client_secret=keycloak_settings.client_secret,
-            admin_client_secret=keycloak_settings.admin_client_secret,
-            realm=keycloak_settings.realm,
-            callback_uri=keycloak_settings.callback_uri
-        )
-        return idp
-    except:
-        # If Keycloak not available return None to disable
-        return None
+@lru_cache()
+def get_keycloak_settings() -> KeycloakSettings:
+    return __load_env_file_on_settings(KeycloakSettings)
+
+
+def configure_keycloak_api(api: FastAPI):
+    from app.common import idp
+    if idp is not None:
+        # Enable authentication layer to swagger endpoints
+        idp.add_swagger_config(api)
+        # Include auth router
+        from app.common.controllers import auth_router
+        api.include_router(auth_router)

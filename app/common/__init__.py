@@ -1,10 +1,6 @@
 from typing import Callable, Any
-
 from fastapi_keycloak import OIDCUser
-
-from app.common.core.configuration import get_idp, get_keycloak_settings
-
-idp = get_idp(get_keycloak_settings())
+from app.common.infra import idp
 
 
 # Shortcut for checking current user and roles

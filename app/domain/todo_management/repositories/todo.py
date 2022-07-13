@@ -1,23 +1,20 @@
-from typing import Optional, List
+from typing import List
 from uuid import UUID
 
 from fastapi import Depends
-from sqlalchemy.orm import sessionmaker
 from sqlmodel import select, Session
 
 from app.common.base.base_repository import BaseSQLRepository
 from app.common.exceptions.http import NotFoundException
 from app.common.infra.sql_adaptors import get_session
-from app.domain.models.todo import Todo
+from app.domain.todo_management.models import Todo
 
 
 class TodoSQLRepository(BaseSQLRepository[Todo]):
 
     def create(self, *, description: str) -> Todo:
         new_todo = Todo(description=description)
-        self.session.add(new_todo)
-        self.session.commit()
-        self.session.refresh(new_todo)
+        self.add(model=new_todo)
         return new_todo
 
     def get_pending_todos(self) -> List[Todo]:
@@ -25,14 +22,9 @@ class TodoSQLRepository(BaseSQLRepository[Todo]):
         return todos.all()
 
     def todo_done(self, todo_id: UUID) -> Todo:
-        query = self.session.exec(select(Todo).where(Todo.id == todo_id))
-        todo = query.one_or_none()
-        if not todo:
-            raise NotFoundException(detail="TODO not found with ID {}".format(todo_id))
+        todo = self.get(uid=todo_id)
         todo.done = True
-        self.session.add(todo)
-        self.session.commit()
-        self.session.refresh(todo)
+        self.save(model=todo, refresh=False)
         return todo
 
 

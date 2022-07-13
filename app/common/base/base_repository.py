@@ -6,6 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sqlmodel import SQLModel, Session
 
+from app.common.exceptions.http import NotFoundException
 from app.common.infra.sql_adaptors import get_session
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
@@ -25,5 +26,18 @@ class BaseSQLRepository(Generic[ModelType]):
             select(self.model)
             .where(self.model.id == uid)
             .options(selectinload('*'))
-        )
-        return response.one_or_none()
+        ).one_or_none()
+        if not response:
+            raise NotFoundException(detail="Not found with ID {}".format(uid))
+        return response
+
+    def add(self, *, model: ModelType):
+        self.session.add(model)
+        self.session.commit()
+        self.session.refresh(model)
+
+    def save(self, *, model: ModelType, refresh=True):
+        self.session.add(model)
+        self.session.commit()
+        if refresh:
+            self.session.refresh(model)

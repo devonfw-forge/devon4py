@@ -1,7 +1,7 @@
 import logging
 import uuid
 from asyncio import Queue, CancelledError
-from typing import Dict
+from typing import Dict, Iterable
 
 from sse_starlette.sse import EventSourceResponse
 from starlette.requests import Request
@@ -13,25 +13,31 @@ class EventPublisher:
     def __init__(self):
         self.subscribers: Dict[uuid.UUID, Queue] = dict()
 
-    async def publish(self, data, topic: None | str = None):
+    def publish(self, data, topic: None | str = None, targets: None | Iterable[uuid.UUID] = None) -> None:
         event = {"data": data}
         if isinstance(topic, str):
             event["event"] = topic
-        for event_queue in self.subscribers.values():
-            await event_queue.put(event)
+        queues_to_update = self.subscribers.values() if not targets else (self.subscribers[key] for key in targets)
+        for event_queue in queues_to_update:
+            event_queue.put_nowait(event)
 
-    def subscribe(self, request: Request, subscriber_id=None) -> EventSourceResponse:
-        if not subscriber_id:
-            subscriber_id = uuid.uuid4()
+    def subscribe(self) -> (uuid.UUID, EventSourceResponse):
+        subscriber_id = self._generate_id()
         logger.debug(f"Adding new subscriber with {subscriber_id=}")
         event_queue = Queue()
         self.subscribers[subscriber_id] = event_queue
-        return EventSourceResponse(self._event_generator(subscriber_id, event_queue, request))
+        return subscriber_id, EventSourceResponse(self._event_generator(subscriber_id, event_queue))
 
-    def unsubscribe(self, subscriber_id):
+    def unsubscribe(self, subscriber_id: uuid.UUID):
         self.subscribers.pop(subscriber_id)
 
-    async def _event_generator(self, subscriber_id, event_queue: Queue, request: Request):
+    def _generate_id(self) -> uuid.UUID:
+        subscriber_id = uuid.uuid4()
+        while subscriber_id in self.subscribers:
+            subscriber_id = uuid.uuid4()
+        return subscriber_id
+
+    async def _event_generator(self, subscriber_id, event_queue: Queue):
         while True:
             try:
                 yield await event_queue.get()

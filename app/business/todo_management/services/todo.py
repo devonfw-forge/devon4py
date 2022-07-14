@@ -15,14 +15,14 @@ class TodoService:
     def __init__(self, repository: TodoSQLRepository = Depends(TodoRepository)):
         self.todo_repo = repository
 
-    def get_pending_todos(self) -> List[TodoDto]:
-        raw_todos = self.todo_repo.get_pending_todos()
+    async def get_pending_todos(self) -> List[TodoDto]:
+        raw_todos = await self.todo_repo.get_pending_todos()
         todo_dtos = map(parse_to_dto, raw_todos)
         return list(todo_dtos)
 
-    def create_todo(self, create_req: CreateTodoRequest) -> TodoDto:
-        raw_new_todo = self.todo_repo.create(description=create_req.description)
+    async def create_todo(self, create_req: CreateTodoRequest) -> TodoDto:
+        raw_new_todo = await self.todo_repo.create(description=create_req.description)
         return parse_to_dto(raw_new_todo)
 
-    def todo_done(self, todo: TodoID):
-        self.todo_repo.todo_done(todo_id=todo.id)
+    async def todo_done(self, todo: TodoID):
+        await self.todo_repo.todo_done(todo_id=todo.id)

@@ -18,7 +18,7 @@ def get_pending_todos(todo_service: TodoService = Depends(TodoService)):
 
 
 @router.post("/create", description="Creates a new TODO", response_model=TodoDto)
-def create_todo(create_request: CreateTodoRequest, todo_service=Depends(TodoService)):
+def create_todo(create_request: CreateTodoRequest, todo_service: TodoService = Depends(TodoService)):
     logger.info("Creating a new TODO")
     todo = todo_service.create_todo(create_request)
     return todo

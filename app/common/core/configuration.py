@@ -1,4 +1,4 @@
-from typing import Optional, Type, List
+from typing import Optional, Type, List, Union
 
 import yaml
 from fastapi import FastAPI, APIRouter
@@ -19,10 +19,10 @@ class GlobalSettings(BaseSettings):
     environment: str = "TEST"
     port: int = 80
     swagger_path: str = "/docs"
-    cors: List[str] | List[AnyHttpUrl] = []
+    cors: Union[List[str], List[AnyHttpUrl]] = []
 
     @validator("cors", pre=True)
-    def assemble_cors_origins(cls, v: str | List[str]) -> List[str] | str:
+    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
         if v is None:
             print("CORS Not Specified")
             return []

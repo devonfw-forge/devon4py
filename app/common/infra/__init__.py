@@ -26,7 +26,7 @@ def get_idp(keycloak_settings: KeycloakSettings | None):
                 callback_uri=keycloak_settings.callback_uri
             )
             return idp_local, IDPType.KEYCLOAK
-        except:
+        except Exception:
             # If Keycloak not available return None to disable
             return None, None
 

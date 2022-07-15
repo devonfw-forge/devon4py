@@ -12,6 +12,9 @@ from app.domain.todo_management.models import Todo
 
 class TodoSQLRepository(BaseSQLRepository[Todo]):
 
+    def __init__(self, session: AsyncSession = Depends(get_async_session)):
+        super().__init__(Todo, session)
+
     async def create(self, *, description: str) -> Todo:
         new_todo = Todo(description=description)
         await self.add(model=new_todo)
@@ -26,7 +29,3 @@ class TodoSQLRepository(BaseSQLRepository[Todo]):
         todo.done = True
         await self.save(model=todo, refresh=False)
         return todo
-
-
-def get_todo_repository(session: AsyncSession = Depends(get_async_session)):
-    return TodoSQLRepository(Todo, session)

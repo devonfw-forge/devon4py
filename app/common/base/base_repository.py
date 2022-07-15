@@ -32,7 +32,7 @@ class BaseSQLRepository(Generic[ModelType]):
         return response
 
     async def add(self, *, model: ModelType):
-        await self.session.add(model)
+        self.session.add(model)
         await self.session.commit()
         await self.session.refresh(model)
 

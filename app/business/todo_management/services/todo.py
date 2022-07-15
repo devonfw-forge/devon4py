@@ -15,7 +15,7 @@ def parse_to_dto(todo_entity: Todo):
 
 class TodoService:
     # TODO: Currently EventPublisher is only supported when workers=1
-    _todoEventPublisher = EventPublisher()
+    _todo_event_publisher = EventPublisher()
 
     def __init__(self, repository: TodoSQLRepository = Depends(get_todo_repository)):
         self.todo_repo = repository
@@ -32,10 +32,10 @@ class TodoService:
         return todo_dto
 
     def add_sse(self) -> ServerSentEvent:
-        _, sse = self._todoEventPublisher.subscribe()
+        _, sse = self._todo_event_publisher.subscribe()
         return sse
 
     def _notify_todo_added(self, todo):
         # Publish the new to_do as an event on the topic "todo_added"
-        self._todoEventPublisher.publish(todo, "todo_added")
+        self._todo_event_publisher.publish(todo, "todo_added")
 

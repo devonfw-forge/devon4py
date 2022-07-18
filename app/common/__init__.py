@@ -1,4 +1,4 @@
-from typing import Callable, Any
+from typing import Callable
 from fastapi_keycloak import OIDCUser
 from app.common.infra import idp
 

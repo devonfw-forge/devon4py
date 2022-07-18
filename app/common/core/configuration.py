@@ -33,7 +33,7 @@ class GlobalSettings(BaseSettings):
 
 # Utils to load Configurations
 
-def __load_env_file_on_settings(settings: Type[BaseSettings]):
+def load_env_file_on_settings(settings: Type[BaseSettings]):
     env = os.environ.get("ENV")
     if env:
         return settings(_env_file="{}.env".format(env))
@@ -43,7 +43,8 @@ def __load_env_file_on_settings(settings: Type[BaseSettings]):
 
 @lru_cache()
 def get_global_settings() -> GlobalSettings:
-    return __load_env_file_on_settings(GlobalSettings)
+    # TODO: Check linting
+    return load_env_file_on_settings(GlobalSettings)
 
 
 @lru_cache()

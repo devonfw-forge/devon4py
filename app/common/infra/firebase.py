@@ -1,13 +1,13 @@
 from functools import lru_cache
 from typing import Optional
-from fastapi import Depends, HTTPException
-from fastapi.openapi.models import Response
+from fastapi import Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseSettings
 
-from app.common.core.configuration import __load_env_file_on_settings
+from app.common.core.configuration import load_env_file_on_settings
 from app.common.exceptions.http import BearerAuthenticationNeededException, InvalidFirebaseAuthenticationException
 from app.common.core.identity_provider import IdentityProvider
+from app.common.exceptions.runtime import ConfigurationException
 
 
 class FirebaseSettings(BaseSettings):
@@ -21,7 +21,7 @@ class FirebaseSettings(BaseSettings):
 
 @lru_cache()
 def get_firebase_settings() -> FirebaseSettings:
-    return __load_env_file_on_settings(FirebaseSettings)
+    return load_env_file_on_settings(FirebaseSettings)
 
 
 class FirebaseService(IdentityProvider):
@@ -33,6 +33,7 @@ class FirebaseService(IdentityProvider):
             options['databaseURL'] = settings.database_url
         firebase_admin.initialize_app(credential=firebase_credentials, options=options)
 
+    # TODO: Validate required roles
     def get_current_user(self, required_roles: list[str] | None = None):
         from firebase_admin import auth
 

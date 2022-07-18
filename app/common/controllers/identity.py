@@ -3,7 +3,8 @@ from typing import Optional, List
 from fastapi import APIRouter, Depends, Body, Query
 from fastapi_keycloak import HTTPMethod, KeycloakUser
 from pydantic import SecretStr
-from app.common import get_user, idp
+from app.common import get_user
+from app.common.core.identity_provider import idp
 
 router = APIRouter(prefix="/idp", dependencies=[Depends(get_user())])  # Protect all the paths with user authentication
 

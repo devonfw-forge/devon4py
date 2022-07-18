@@ -27,7 +27,7 @@ def get_keycloak_settings() -> KeycloakSettings:
 
 
 def configure_keycloak_api(api: FastAPI):
-    from app.common import idp
+    from app.common.core.identity_provider import idp
     if idp is not None:
         # Enable authentication layer to swagger endpoints
         idp.add_swagger_config(api)

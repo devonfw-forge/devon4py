@@ -1,6 +1,6 @@
 from typing import Callable
 from fastapi_keycloak import OIDCUser
-from app.common.infra import idp
+from app.common.core.identity_provider import idp
 
 
 # Shortcut for checking current user and roles

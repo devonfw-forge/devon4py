@@ -7,7 +7,6 @@ from pydantic import BaseSettings
 from app.common.core.configuration import load_env_file_on_settings
 from app.common.exceptions.http import BearerAuthenticationNeededException, InvalidFirebaseAuthenticationException
 from app.common.core.identity_provider import IdentityProvider
-from app.common.exceptions.runtime import ConfigurationException
 
 
 class FirebaseSettings(BaseSettings):

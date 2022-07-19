@@ -8,3 +8,5 @@ sqlmodel
 fastapi_keycloak
 pyyaml
 pydantic[dotenv]
+pydantic[email]
+aiosqlite

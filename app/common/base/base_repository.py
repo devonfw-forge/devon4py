@@ -1,30 +1,41 @@
-from typing import Generic, TypeVar, Type, Union, Optional, Callable
+from typing import Generic, TypeVar, Type, Union, Optional
 from uuid import UUID
 
 from fastapi import Depends
-from sqlalchemy import select
-from sqlalchemy.orm import selectinload, sessionmaker
-from sqlmodel import SQLModel, Session
-from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlalchemy.orm import selectinload
+from sqlmodel import SQLModel, select
 
-from app.common.core.database import get_session
+from app.common.exceptions.http import NotFoundException
+from app.common.infra.sql_adaptors import get_async_session, AsyncSession
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
 
 
-class BaseRepository(Generic[ModelType]):
-
-    def __init__(self, model: Type[ModelType], session: Session = Depends(get_session)):
+class BaseSQLRepository(Generic[ModelType]):
+    
+    def __init__(self, model: Type[ModelType], session: AsyncSession = Depends(get_async_session)):
         """
         Object with default methods to Create, Read, Update and Delete (CRUD).
         """
         self.model = model
         self.session = session
 
-    def get(self, *, uid: Union[UUID, str]) -> Optional[ModelType]:
-        response = self.session.exec(
+    async def get(self, *, uid: Union[UUID, str]) -> Optional[ModelType]:
+        response = await self.session.exec(
             select(self.model)
             .where(self.model.id == uid)
             .options(selectinload('*'))
         )
-        return response.one_or_none()
+        response = response.one_or_none()
+        if not response:
+            raise NotFoundException(detail="Not found with ID {}".format(uid))
+        return response
+
+    async def add(self, *, model: ModelType):
+        await self.save(model=model, refresh=True)
+
+    async def save(self, *, model: ModelType, refresh=False):
+        await self.session.add(model)
+        await self.session.commit()
+        if refresh:
+            await self.session.refresh(model)

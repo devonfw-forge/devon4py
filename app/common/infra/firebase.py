@@ -55,10 +55,8 @@ class FirebaseService:
 
         return validate_token
 
-
-def configure_firebase_api(api: FastAPI):
-    from app.common import idp
-    if idp is not None:
+    @staticmethod
+    def configure_api(api: FastAPI):
         # Include auth router
         from app.common.controllers import firebase_routers
         api.include_router(firebase_routers)

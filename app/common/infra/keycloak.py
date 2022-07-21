@@ -3,7 +3,6 @@ from functools import lru_cache
 from fastapi import FastAPI
 from pydantic import BaseSettings
 
-from app.common.core.identity_provider import IdentityProvider
 from app.common.core.configuration import load_env_file_on_settings
 
 

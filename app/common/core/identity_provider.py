@@ -1,5 +1,7 @@
 import abc
-from typing import Protocol, Optional, List, Callable, Any
+from typing import Protocol, Optional, List, Callable, Any, T
+
+from fastapi import FastAPI
 from pydantic import BaseModel
 
 
@@ -25,5 +27,14 @@ class IdentityProvider(Protocol):
             JWTError: If decoding fails or the signature is invalid
             JWTClaimsError: If any claim is invalid
             HTTPException: If any role required is not contained within the roles of the users
+        """
+        ...
+
+    @property
+    def client(self) -> T:
+        raise Exception
+
+    def configure_api(self, api: FastAPI):
+        """Function that configures the API adding extra controllers or features specifics for this IDP
         """
         ...

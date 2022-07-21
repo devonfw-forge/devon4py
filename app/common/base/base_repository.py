@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, Type, Union, Optional
+from typing import Generic, TypeVar, Type, Union, Optional, Protocol
 from uuid import UUID
 
 from fastapi import Depends
@@ -9,6 +9,17 @@ from app.common.exceptions.http import NotFoundException
 from app.common.infra.sql_adaptors import get_async_session, AsyncSession
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
+
+
+class AsyncRepositoryProtocol(Protocol):
+    async def get(self, *, uid: Union[UUID, str]) -> Optional[ModelType]:
+        ...
+
+    async def add(self, *, model: ModelType):
+        ...
+
+    async def save(self, *, model: ModelType, refresh=True):
+        ...
 
 
 class BaseSQLRepository(Generic[ModelType]):

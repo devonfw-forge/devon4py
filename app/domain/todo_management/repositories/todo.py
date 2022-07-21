@@ -1,13 +1,24 @@
-from typing import List
+from typing import List, Protocol
 from uuid import UUID
 
 from fastapi import Depends
 from sqlmodel.sql.expression import Select, select
 
-from app.common.base.base_repository import BaseSQLRepository
+from app.common.base.base_repository import BaseSQLRepository, AsyncRepositoryProtocol
 from app.common.exceptions.http import NotFoundException
 from app.common.infra.sql_adaptors import get_session, get_async_session, AsyncSession
 from app.domain.todo_management.models import Todo
+
+
+class TodoRepositoryProtocol(Protocol):
+    async def create(self, *, description: str) -> Todo:
+        ...
+
+    async def get_pending_todos(self) -> List[Todo]:
+        ...
+
+    async def todo_done(self, todo_id: UUID) -> Todo:
+        ...
 
 
 class TodoSQLRepository(BaseSQLRepository[Todo]):

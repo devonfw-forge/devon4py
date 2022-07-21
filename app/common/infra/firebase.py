@@ -24,7 +24,7 @@ def get_firebase_settings() -> FirebaseSettings:
     return load_env_file_on_settings(FirebaseSettings)
 
 
-class FirebaseService(IdentityProvider):
+class FirebaseService:
     def __init__(self, settings: FirebaseSettings):
         import firebase_admin
         firebase_credentials = firebase_admin.credentials.Certificate(settings.credentials_file)

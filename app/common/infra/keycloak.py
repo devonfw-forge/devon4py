@@ -35,7 +35,7 @@ def configure_keycloak_api(api: FastAPI):
         api.include_router(keycloak_routers)
 
 
-class KeycloakService(IdentityProvider):
+class KeycloakService:
 
     def __init__(self, keycloak_settings: KeycloakSettings):
         from fastapi_keycloak import FastAPIKeycloak

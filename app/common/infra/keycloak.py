@@ -47,4 +47,4 @@ class KeycloakService(IdentityProvider):
                                       callback_uri=keycloak_settings.callback_uri)
 
     def get_current_user(self, required_roles: list[str] | None = None):
-        return self.client.get_current_user(required_roles=required_roles)
+        return self.client.get_current_user(required_roles=required_roles)  # TODO: Refactor to return User

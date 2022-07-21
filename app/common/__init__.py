@@ -1,10 +1,13 @@
 from typing import Callable, Any
 from fastapi_keycloak import OIDCUser
-from app.common.infra import idp
 
 
 # Shortcut for checking current user and roles
-def get_user(required_roles: list[str] | None = None) -> Callable[[], OIDCUser]:
+from app.common.core.identity_provider import User
+from app.common.infra import idp
+
+
+def get_user(required_roles: list[str] | None = None) -> Callable[[Any], User]:
     """Returns a function that checks the current user based on an access token in the HTTP-header. Optionally verifies
     roles are possessed by the user
 

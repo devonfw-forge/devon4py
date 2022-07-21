@@ -4,7 +4,7 @@ from fastapi import Depends
 
 from app.business.todo_management.models.todo import TodoDto, CreateTodoRequest, TodoID
 from app.domain.todo_management.models import Todo
-from app.domain.todo_management.repositories.todo import TodoSQLRepository
+from app.domain.todo_management.repositories.todo import TodoSQLRepository, TodoRepositoryProtocol
 
 
 def parse_to_dto(todo_entity: Todo):
@@ -12,7 +12,7 @@ def parse_to_dto(todo_entity: Todo):
 
 
 class TodoService:
-    def __init__(self, repository: TodoSQLRepository = Depends(TodoSQLRepository)):
+    def __init__(self, repository: TodoRepositoryProtocol = Depends(TodoSQLRepository)):
         self.todo_repo = repository
 
     async def get_pending_todos(self) -> List[TodoDto]:

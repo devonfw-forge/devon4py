@@ -18,4 +18,5 @@ class IdentityProvider(abc.ABC):
             JWTError: If decoding fails or the signature is invalid
             JWTClaimsError: If any claim is invalid
             HTTPException: If any role required is not contained within the roles of the users
-    """
+        """
+        raise NotImplementedError

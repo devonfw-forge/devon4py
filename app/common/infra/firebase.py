@@ -10,7 +10,7 @@ from app.common.core.identity_provider import IdentityProvider
 
 
 class FirebaseSettings(BaseSettings):
-    credentials_file: Optional[str]
+    credentials_file: str
     database_url: Optional[str]
 
     class Config:

@@ -31,8 +31,8 @@ def configure_keycloak_api(api: FastAPI):
         # Enable authentication layer to swagger endpoints
         idp.add_swagger_config(api)
         # Include auth router
-        from app.common.controllers import auth_router
-        api.include_router(auth_router)
+        from app.common.controllers import keycloak_routers
+        api.include_router(keycloak_routers)
 
 
 class KeycloakService(IdentityProvider):

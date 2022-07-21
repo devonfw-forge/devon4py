@@ -12,3 +12,7 @@ router = APIRouter(prefix="/auth")
 #################################
 # Basic Authentication Router
 #################################
+
+@router.get("/set-admin")  # Sets current user as admin
+def set_user_admin(user: User = Depends(get_user())):
+    auth.set_custom_user_claims(user.uid, {"roles": ["admin"]})

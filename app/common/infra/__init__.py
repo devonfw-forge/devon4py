@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Union
 
 from fastapi import FastAPI
 from fastapi_keycloak import FastAPIKeycloak
@@ -10,7 +11,7 @@ class IDPType(Enum):
     KEYCLOAK = 0
 
 
-def get_idp(keycloak_settings: KeycloakSettings | None):
+def get_idp(keycloak_settings: Union[KeycloakSettings, None]):
     # Check if configuration is defined to use Keycloak IDP
     if keycloak_settings is None or keycloak_settings.auth_server is None or keycloak_settings.realm is None:
         return None, None

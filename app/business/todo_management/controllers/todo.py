@@ -22,3 +22,8 @@ async def create_todo(create_request: CreateTodoRequest, todo_service=Depends(To
     logger.info("Creating a new TODO")
     todo = await todo_service.create_todo(create_request)
     return todo
+
+@router.get("/test")
+async def get_pending_todos():
+    logger.info("Retrieving all the pending TODOs")
+    return "Hello"

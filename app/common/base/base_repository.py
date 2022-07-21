@@ -12,7 +12,7 @@ ModelType = TypeVar("ModelType", bound=SQLModel)
 
 
 class BaseSQLRepository(Generic[ModelType]):
-
+    
     def __init__(self, model: Type[ModelType], session: AsyncSession = Depends(get_async_session)):
         """
         Object with default methods to Create, Read, Update and Delete (CRUD).

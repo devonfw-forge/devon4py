@@ -9,9 +9,8 @@ class User(BaseModel):
     roles: List[str]
 
 
-class IdentityProvider(abc.ABC):
-    @abc.abstractmethod
-    def get_current_user(self, required_roles: list[str] | None = None):
+class IdentityProvider(Protocol):
+    def get_current_user(self, required_roles: list[str] | None = None) -> Callable[[Any], User]:
         """Function that checks the current user based on an access token in the HTTP-header. Optionally verifies
         roles are possessed by the user
 
@@ -27,4 +26,4 @@ class IdentityProvider(abc.ABC):
             JWTClaimsError: If any claim is invalid
             HTTPException: If any role required is not contained within the roles of the users
         """
-        raise NotImplementedError
+        ...

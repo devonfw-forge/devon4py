@@ -4,8 +4,7 @@ from fastapi import APIRouter, Depends
 from fastapi_keycloak import OIDCUser, UsernamePassword
 from starlette.responses import RedirectResponse
 
-from app.common import get_user
-from app.common.core.identity_provider import idp
+from app.common import get_user, idp
 
 logger = logging.getLogger(__name__)
 

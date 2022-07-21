@@ -1,4 +1,4 @@
-from typing import Any, Optional, Dict
+from typing import Any, Optional, Dict, List
 
 from fastapi import HTTPException
 
@@ -37,3 +37,8 @@ class InvalidFirebaseAuthenticationException(DevonHttpException):
     def __init__(self, error: Exception = None):
         super().__init__(status_code=401, detail=f"Invalid authentication from Firebase. {error}",
                          headers={'WWW-Authenticate': 'Bearer error="invalid_token"'})
+
+
+class UnauthorizedException(DevonHttpException):
+    def __init__(self, roles: List[str] = None):
+        super().__init__(status_code=401, detail=f"Unauthorized user. Required roles {roles}")

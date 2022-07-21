@@ -1,12 +1,13 @@
 from functools import lru_cache
 from typing import Optional
-from fastapi import Depends
+from fastapi import Depends, FastAPI
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseSettings
 
 from app.common.core.configuration import load_env_file_on_settings
-from app.common.exceptions.http import BearerAuthenticationNeededException, InvalidFirebaseAuthenticationException
-from app.common.core.identity_provider import IdentityProvider
+from app.common.exceptions.http import BearerAuthenticationNeededException, InvalidFirebaseAuthenticationException, \
+    UnauthorizedException
+from app.common.core.identity_provider import IdentityProvider, User
 
 
 class FirebaseSettings(BaseSettings):
@@ -30,19 +31,34 @@ class FirebaseService(IdentityProvider):
         options = {}
         if settings.database_url:
             options['databaseURL'] = settings.database_url
-        firebase_admin.initialize_app(credential=firebase_credentials, options=options)
+        self.client = firebase_admin.initialize_app(credential=firebase_credentials, options=options)
 
-    # TODO: Validate required roles
     def get_current_user(self, required_roles: list[str] | None = None):
         from firebase_admin import auth
 
-        def validate_token(credential: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False))):
+        def validate_token(credential: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False))) -> User:
             if credential is None:
                 raise BearerAuthenticationNeededException()
             try:
-                decoded_token = auth.verify_id_token(credential.credentials)
+                decoded_token = auth.verify_id_token(credential.credentials, self.client)
             except Exception as err:
                 raise InvalidFirebaseAuthenticationException(error=err)
-            return decoded_token
+            roles = []
+            if 'roles' in decoded_token.keys():
+                roles = decoded_token['roles']
+            if required_roles is not None:
+                for r in required_roles:
+                    if r not in roles:
+                        raise UnauthorizedException(required_roles)
+            user: User = User(uid=decoded_token['uid'], email=decoded_token['email'], roles=roles)
+            return user
 
         return validate_token
+
+
+def configure_firebase_api(api: FastAPI):
+    from app.common import idp
+    if idp is not None:
+        # Include auth router
+        from app.common.controllers import firebase_routers
+        api.include_router(firebase_routers)

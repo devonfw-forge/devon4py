@@ -1,4 +1,12 @@
 import abc
+from typing import Protocol, Optional, List, Callable, Any
+from pydantic import BaseModel
+
+
+class User(BaseModel):
+    uid: str
+    email: Optional[str]
+    roles: List[str]
 
 
 class IdentityProvider(abc.ABC):

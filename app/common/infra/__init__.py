@@ -1,7 +1,6 @@
 import logging
 from enum import Enum
 
-from fastapi import FastAPI
 from pydantic import ValidationError
 
 from app.common.core.configuration import load_env_file_on_settings

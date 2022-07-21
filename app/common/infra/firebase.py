@@ -2,6 +2,7 @@ from functools import lru_cache
 from typing import Optional
 from fastapi import Depends, FastAPI
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from firebase_admin import App
 from pydantic import BaseSettings
 
 from app.common.core.configuration import load_env_file_on_settings
@@ -31,7 +32,11 @@ class FirebaseService:
         options = {}
         if settings.database_url:
             options['databaseURL'] = settings.database_url
-        self.client = firebase_admin.initialize_app(credential=firebase_credentials, options=options)
+        self._client = firebase_admin.initialize_app(credential=firebase_credentials, options=options)
+
+    @property
+    def client(self) -> App:
+        return self._client
 
     def get_current_user(self, required_roles: list[str] | None = None):
         from firebase_admin import auth

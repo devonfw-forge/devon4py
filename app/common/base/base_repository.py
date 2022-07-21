@@ -32,12 +32,10 @@ class BaseSQLRepository(Generic[ModelType]):
         return response
 
     async def add(self, *, model: ModelType):
-        self.session.add(model)
-        await self.session.commit()
-        await self.session.refresh(model)
+        await self.save(model=model, refresh=True)
 
-    async def save(self, *, model: ModelType, refresh=True):
-        await self.session.add(model)
+    async def save(self, *, model: ModelType, refresh=False):
+        self.session.add(model)
         await self.session.commit()
         if refresh:
             await self.session.refresh(model)

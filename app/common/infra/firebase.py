@@ -31,7 +31,7 @@ class FirebaseService(IdentityProvider):
         options = {}
         if settings.database_url:
             options['databaseURL'] = settings.database_url
-        self.client = firebase_admin.initialize_app(credential=firebase_credentials, options=options)
+        self._client = firebase_admin.initialize_app(credential=firebase_credentials, options=options)
 
     def get_current_user(self, required_roles: list[str] | None = None):
         from firebase_admin import auth
@@ -54,6 +54,10 @@ class FirebaseService(IdentityProvider):
             return user
 
         return validate_token
+
+    @property
+    def client(self):
+        return self._client
 
     def configure_api(self, api: FastAPI):
         # Include auth router

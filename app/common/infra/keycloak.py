@@ -28,12 +28,12 @@ def get_keycloak_settings() -> KeycloakSettings:
 class KeycloakService(IdentityProvider):
     def __init__(self, keycloak_settings: KeycloakSettings):
         from fastapi_keycloak import FastAPIKeycloak
-        self.client = FastAPIKeycloak(server_url=keycloak_settings.auth_server,
-                                      client_id=keycloak_settings.client_id,
-                                      client_secret=keycloak_settings.client_secret,
-                                      admin_client_secret=keycloak_settings.admin_client_secret,
-                                      realm=keycloak_settings.realm,
-                                      callback_uri=keycloak_settings.callback_uri)
+        self._client = FastAPIKeycloak(server_url=keycloak_settings.auth_server,
+                                       client_id=keycloak_settings.client_id,
+                                       client_secret=keycloak_settings.client_secret,
+                                       admin_client_secret=keycloak_settings.admin_client_secret,
+                                       realm=keycloak_settings.realm,
+                                       callback_uri=keycloak_settings.callback_uri)
 
     def get_current_user(self, required_roles: list[str] | None = None):
         return self.client.get_current_user(required_roles=required_roles)  # TODO: Refactor to return User
@@ -44,3 +44,7 @@ class KeycloakService(IdentityProvider):
         # Include auth router
         from app.common.controllers import keycloak_routers
         api.include_router(keycloak_routers)
+
+    @property
+    def client(self):
+        return self._client

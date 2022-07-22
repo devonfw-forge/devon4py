@@ -34,3 +34,7 @@ class IdentityProvider(abc.ABC):
     @abc.abstractmethod
     def configure_api(self, api: FastAPI):
         raise NotImplementedError
+
+    @property
+    def client(self):
+        raise NotImplementedError

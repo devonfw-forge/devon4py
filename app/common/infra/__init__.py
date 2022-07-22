@@ -1,13 +1,12 @@
 import logging
 from enum import Enum
 
-from fastapi import FastAPI
 from pydantic import ValidationError
 
 from app.common.core.configuration import load_env_file_on_settings
-from app.common.infra.firebase import FirebaseSettings, get_firebase_settings, FirebaseService, configure_firebase_api
+from app.common.infra.firebase import FirebaseSettings, get_firebase_settings, FirebaseService
 from app.common.core.identity_provider import IdentityProvider
-from app.common.infra.keycloak import KeycloakSettings, get_keycloak_settings, KeycloakService, configure_keycloak_api
+from app.common.infra.keycloak import KeycloakSettings, get_keycloak_settings, KeycloakService
 
 
 logger = logging.getLogger(__name__)
@@ -30,14 +29,6 @@ def __get_idp() -> (IdentityProvider, IDPType):
             logger.info(f"Initializing IDP of type {service_type}")
             return service_type(settings), idp_enum_value
     return None, None
-
-
-# TODO: Add this as class method (and refactor this file)
-def configure_api(api: FastAPI):
-    if idp_type == IDPType.KEYCLOAK:
-        configure_keycloak_api(api)
-    if idp_type == IDPType.FIREBASE:
-        configure_firebase_api(api)
 
 
 idp_configuration = __get_idp()

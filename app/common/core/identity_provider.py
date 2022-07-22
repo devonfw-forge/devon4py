@@ -1,5 +1,7 @@
 import abc
 from typing import Protocol, Optional, List, Callable, Any
+
+from fastapi import FastAPI
 from pydantic import BaseModel
 
 
@@ -27,4 +29,8 @@ class IdentityProvider(abc.ABC):
             JWTClaimsError: If any claim is invalid
             HTTPException: If any role required is not contained within the roles of the users
         """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def configure_api(self, api: FastAPI):
         raise NotImplementedError

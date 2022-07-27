@@ -2,7 +2,7 @@ from functools import lru_cache
 from typing import Optional
 from fastapi import Depends, FastAPI
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from pydantic import BaseSettings
+from pydantic import BaseSettings, ValidationError
 
 from app.common.core.configuration import load_env_file_on_settings
 from app.common.exceptions.http import BearerAuthenticationNeededException, InvalidFirebaseAuthenticationException, \
@@ -12,7 +12,6 @@ from app.common.core.identity_provider import IdentityProvider, User
 
 class FirebaseSettings(BaseSettings):
     credentials_file: str
-    database_url: Optional[str]
 
     class Config:
         env_prefix = "FIREBASE_"
@@ -27,11 +26,8 @@ def get_firebase_settings() -> FirebaseSettings:
 class FirebaseService(IdentityProvider):
     def __init__(self, settings: FirebaseSettings):
         import firebase_admin
-        firebase_credentials = firebase_admin.credentials.Certificate(settings.credentials_file)
-        options = {}
-        if settings.database_url:
-            options['databaseURL'] = settings.database_url
-        self._client = firebase_admin.initialize_app(credential=firebase_credentials, options=options)
+        firebase_credentials = firebase_admin.credentials.Certificate(settings.credentials_file)  # TODO Refactor to GC library
+        self._client = firebase_admin.initialize_app(credential=firebase_credentials)
 
     def get_current_user(self, required_roles: list[str] | None = None):
         from firebase_admin import auth

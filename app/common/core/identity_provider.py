@@ -8,6 +8,7 @@ from pydantic import BaseModel
 class User(BaseModel):
     uid: str
     email: Optional[str]
+    phone: Optional[str]  # TODO Test Phone
     roles: List[str]
 
 

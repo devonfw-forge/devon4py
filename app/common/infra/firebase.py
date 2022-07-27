@@ -8,6 +8,13 @@ from app.common.core.configuration import load_env_file_on_settings
 from app.common.exceptions.http import BearerAuthenticationNeededException, InvalidFirebaseAuthenticationException, \
     UnauthorizedException
 from app.common.core.identity_provider import IdentityProvider, User
+import asyncio
+from typing import TypeVar, Generic, Type, Callable
+from google.cloud.firestore_v1 import AsyncClient, AsyncDocumentReference, AsyncCollectionReference
+from google.cloud.firestore_v1.base_document import BaseDocumentReference
+from google.oauth2 import service_account
+from google.oauth2.service_account import Credentials
+from pydantic import BaseModel
 
 
 class FirebaseSettings(BaseSettings):
@@ -59,16 +66,7 @@ class FirebaseService(IdentityProvider):
         # Include auth router
         from app.common.controllers import firebase_routers
         api.include_router(firebase_routers)
-import asyncio
-from typing import TypeVar, Generic, Type, Callable
 
-from google.cloud.firestore_v1 import AsyncClient, AsyncDocumentReference, AsyncCollectionReference
-from google.cloud.firestore_v1.base_document import BaseDocumentReference
-from google.oauth2 import service_account
-from google.oauth2.service_account import Credentials
-from pydantic import BaseModel
-
-CREDENTIALS_FILE = 'C:\\Users\\adriagar\\Proyectos\\Wayat\\wayat-flutter-python-mvp\\SPIKES\\Firebase\\wayat-poc-credentials.json'
 
 
 class BaseFirebaseModel(BaseModel):
@@ -87,7 +85,7 @@ class Location(BaseFirebaseModel):
     pass
 
 
-class User(BaseFirebaseModel):
+class UserModel(BaseFirebaseModel):
     trusted_users: list[str]
     location: BaseDocumentReference
     do_not_disturb: bool
@@ -124,7 +122,7 @@ class BaseFirestoreRepository(Generic[ModelType]):
         ...
 
 
-class UsersRepo(BaseFirestoreRepository[User]):
+class UsersRepo(BaseFirestoreRepository[UserModel]):
     pass
 
 
@@ -132,7 +130,7 @@ async def print_users(async_client: AsyncClient):
     users_collection = async_client.collection("users")
     users = users_collection.list_documents()
     async for user_reference in users:
-        user_data = User(**(await user_reference.get()).to_dict())
+        user_data = UserModel(**(await user_reference.get()).to_dict())
         print(user_data)
 
 
@@ -151,5 +149,5 @@ async def async_main():
 if __name__ == '__main__':
     credentials: Credentials = service_account.Credentials.from_service_account_file(CREDENTIALS_FILE)
     client = AsyncClient(credentials=credentials)
-    users_repo = UsersRepo(collection_path="users", model=User, client=client)
+    users_repo = UsersRepo(collection_path="users", model=UserModel, client=client)
     asyncio.run(async_main())

@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import os
 from functools import lru_cache
-from typing import Type, List
+from typing import Type, List, TypeVar
 
 import yaml
 from pydantic import BaseSettings, AnyHttpUrl, validator
+
+SettingsType = TypeVar('SettingsType', bound=BaseSettings)
 
 
 # Configuration Objects Definitions
@@ -33,7 +35,7 @@ class GlobalSettings(BaseSettings):
 
 # Utils to load Configurations
 
-def __load_env_file_on_settings(settings: Type[BaseSettings]):
+def load_env_file_on_settings(settings: Type[SettingsType]) -> SettingsType:
     env = os.environ.get("ENV")
     if env:
         return settings(_env_file="{}.env".format(env))
@@ -43,7 +45,7 @@ def __load_env_file_on_settings(settings: Type[BaseSettings]):
 
 @lru_cache()
 def get_global_settings() -> GlobalSettings:
-    return __load_env_file_on_settings(GlobalSettings)
+    return load_env_file_on_settings(GlobalSettings)
 
 
 @lru_cache()

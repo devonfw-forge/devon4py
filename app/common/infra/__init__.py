@@ -1,39 +1,37 @@
+import logging
 from enum import Enum
 
-from fastapi import FastAPI
-from fastapi_keycloak import FastAPIKeycloak
+from pydantic import ValidationError
 
-from app.common.infra.keycloak import KeycloakSettings, get_keycloak_settings, configure_keycloak_api
+from app.common.core.configuration import load_env_file_on_settings
+from app.common.infra.firebase import FirebaseSettings, get_firebase_settings, FirebaseService
+from app.common.core.identity_provider import IdentityProvider
+from app.common.infra.keycloak import KeycloakSettings, get_keycloak_settings, KeycloakService
+
+
+logger = logging.getLogger(__name__)
 
 
 class IDPType(Enum):
-    KEYCLOAK = 0
+    KEYCLOAK = KeycloakService, KeycloakSettings
+    FIREBASE = FirebaseService, FirebaseSettings
 
 
-def get_idp(keycloak_settings: KeycloakSettings | None):
-    # Check if configuration is defined to use Keycloak IDP
-    if keycloak_settings is None or keycloak_settings.auth_server is None or keycloak_settings.realm is None:
-        return None, None
-    else:
+def __get_idp() -> (IdentityProvider, IDPType):
+    """Factory that creates the instance of the Identity Provider given the app configuration"""
+    for idp_enum_value in IDPType:
         try:
-            # Configure Keycloak Authentication
-            idp_local = FastAPIKeycloak(
-                server_url=keycloak_settings.auth_server,
-                client_id=keycloak_settings.client_id,
-                client_secret=keycloak_settings.client_secret,
-                admin_client_secret=keycloak_settings.admin_client_secret,
-                realm=keycloak_settings.realm,
-                callback_uri=keycloak_settings.callback_uri
-            )
-            return idp_local, IDPType.KEYCLOAK
-        except Exception:
-            # If Keycloak not available return None to disable
-            return None, None
+            service_type, settings_type = idp_enum_value.value
+            settings = load_env_file_on_settings(settings_type)  # Throws ValidationError
+        except ValidationError:
+            pass
+        else:
+            logger.info(f"Initializing IDP of type {service_type}")
+            return service_type(settings), idp_enum_value
+    return None, None
 
 
-idp, idp_type = get_idp(keycloak_settings=get_keycloak_settings())
+idp_configuration = __get_idp()
 
-
-def configure_api(api: FastAPI):
-    if idp_type == IDPType.KEYCLOAK:
-        configure_keycloak_api(api)
+idp: IdentityProvider = idp_configuration[0]
+idp_type: IDPType = idp_configuration[1]

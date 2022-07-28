@@ -1,14 +1,16 @@
 import logging
 
 from fastapi import APIRouter, Depends
-from fastapi_keycloak import OIDCUser, UsernamePassword
+from fastapi_keycloak import OIDCUser, UsernamePassword, FastAPIKeycloak
 from starlette.responses import RedirectResponse
 
-from app.common import get_user, idp
+from app.common import get_user, idp as _idp
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth")
+
+idp: FastAPIKeycloak = _idp.client
 
 #################################
 # Basic Authentication Router

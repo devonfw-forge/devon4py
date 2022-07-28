@@ -144,7 +144,7 @@ idna = ">=2.0.0"
 
 [[package]]
 name = "fastapi"
-version = "0.78.0"
+version = "0.79.0"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 category = "main"
 optional = false
@@ -299,17 +299,16 @@ grpc = ["grpcio (>=1.38.0,<2.0dev)"]
 
 [[package]]
 name = "google-cloud-firestore"
-version = "2.6.0"
+version = "2.5.1"
 description = "Google Cloud Firestore API client library"
 category = "main"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.6"
 
 [package.dependencies]
-google-api-core = {version = ">=1.32.0,<2.0.0 || >=2.8.0,<3.0.0dev", extras = ["grpc"]}
+google-api-core = {version = ">=1.31.5,<2.0.0 || >2.3.0,<3.0.0dev", extras = ["grpc"]}
 google-cloud-core = ">=1.4.1,<3.0.0dev"
 proto-plus = ">=1.20.5,<2.0.0dev"
-protobuf = ">=3.19.0,<4.0.0dev"
 
 [[package]]
 name = "google-cloud-storage"
@@ -507,8 +506,8 @@ testing = ["google-api-core[grpc] (>=1.31.5)"]
 
 [[package]]
 name = "protobuf"
-version = "3.20.1"
-description = "Protocol Buffers"
+version = "4.21.4"
+description = ""
 category = "main"
 optional = false
 python-versions = ">=3.7"
@@ -827,7 +826,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "58e8dc7fe92e4389ab4d7c230106956958efa7ec93c347ce8656f0eee9c24d27"
+content-hash = "c0521a22fdcee472070f341b07a87c660cf1d99c29ce87d031d74e2b95c64b50"
 
 [metadata.files]
 aiosqlite = [
@@ -869,10 +868,7 @@ email-validator = [
     {file = "email_validator-1.2.1-py2.py3-none-any.whl", hash = "sha256:c8589e691cf73eb99eed8d10ce0e9cbb05a0886ba920c8bcb7c82873f4c5789c"},
     {file = "email_validator-1.2.1.tar.gz", hash = "sha256:6757aea012d40516357c0ac2b1a4c31219ab2f899d26831334c5d069e8b6c3d8"},
 ]
-fastapi = [
-    {file = "fastapi-0.78.0-py3-none-any.whl", hash = "sha256:15fcabd5c78c266fa7ae7d8de9b384bfc2375ee0503463a6febbe3bab69d6f65"},
-    {file = "fastapi-0.78.0.tar.gz", hash = "sha256:3233d4a789ba018578658e2af1a4bb5e38bdd122ff722b313666a9b2c6786a83"},
-]
+fastapi = []
 fastapi-keycloak = []
 firebase-admin = []
 google-api-core = []

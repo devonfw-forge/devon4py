@@ -14,7 +14,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession as _AsyncSession
 
 
 class DatabaseSettings(BaseSettings):
-    type: str
+    type: Optional[str]
     username: Optional[str]
     password: Optional[str]
     host: Optional[str]

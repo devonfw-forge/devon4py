@@ -2,7 +2,7 @@
 name = "devon4py"
 version = "0.0.1"
 description = ""
-authors = ["LuisPi <luis.pinon-ferrer@capgemini.com>"]
+authors = ["LuisPi <luis.pinon-ferrer@capgemini.com>", "Agriagarp <adrian.garcia-pitarch@capgemini.com>]
 
 [tool.poetry.dependencies]
 python = "^3.10"

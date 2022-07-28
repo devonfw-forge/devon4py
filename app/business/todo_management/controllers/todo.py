@@ -22,3 +22,8 @@ async def create_todo(create_request: CreateTodoRequest, todo_service=Depends(To
     logger.info("Creating a new TODO")
     todo = await todo_service.create_todo(create_request)
     return todo
+
+
+@router.get("/subscribe")
+async def subscribe(todo_service: TodoService = Depends(TodoService)):
+    return todo_service.add_sse()

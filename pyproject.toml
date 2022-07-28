@@ -12,6 +12,7 @@ requests = "^2.28.0"
 aiosqlite = "^0.17.0"
 fastapi_keycloak = "^1.0.6"
 firebase-admin = "^5.2.0"
+sse-starlette = "^0.10.3"
 
 [tool.poetry.dev-dependencies]
 

@@ -9,12 +9,12 @@ from sqlmodel.engine.result import ScalarResult
 from sqlmodel.sql.base import Executable
 from sqlalchemy import util
 from sqlmodel.sql.expression import Select, SelectOfScalar
-from app.common.core.configuration import __load_env_file_on_settings
+from app.common.core.configuration import load_env_file_on_settings
 from sqlmodel.ext.asyncio.session import AsyncSession as _AsyncSession
 
 
 class DatabaseSettings(BaseSettings):
-    type: str
+    type: Optional[str]
     username: Optional[str]
     password: Optional[str]
     host: Optional[str]
@@ -30,7 +30,7 @@ class DatabaseSettings(BaseSettings):
 
 @lru_cache()
 def get_db_settings() -> DatabaseSettings:
-    return __load_env_file_on_settings(DatabaseSettings)
+    return load_env_file_on_settings(DatabaseSettings)
 
 
 def get_db_uri(db_settings: DatabaseSettings = Depends(get_db_settings)) -> str:

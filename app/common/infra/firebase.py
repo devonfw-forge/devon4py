@@ -1,86 +1,61 @@
-import json
 from functools import lru_cache
-from typing import TypeVar, Generic, Type, Callable, overload, Any
 
-from fastapi import Depends
-from google.cloud.firestore import AsyncClient, AsyncDocumentReference, AsyncCollectionReference
-from pydantic import BaseModel
+from fastapi import Depends, FastAPI
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from pydantic import BaseSettings
 
-CREDENTIALS_FILE = 'C:\\Users\\adriagar\\Proyectos\\devon4py\\devon4py\\wayat-poc-credentials.json'
+from app.common.core.configuration import load_env_file_on_settings
+from app.common.core.identity_provider import IdentityProvider, User
+from app.common.exceptions.http import BearerAuthenticationNeededException, InvalidFirebaseAuthenticationException, \
+    UnauthorizedException
 
 
-class BaseFirebaseModel(BaseModel):
-    document_id: str
+class FirebaseSettings(BaseSettings):
+    credentials_file: str
 
     class Config:
-        arbitrary_types_allowed = True
-        extra = 'allow'
-
-
-ModelType = TypeVar("ModelType", bound=BaseFirebaseModel)
-
-
-def _get_async_client():
-    return AsyncClient.from_service_account_info(_get_account_info())
+        env_prefix = "FIREBASE_"
+        env_file = "TEST.env"
 
 
 @lru_cache
-def _get_account_info():
-    with open(CREDENTIALS_FILE) as f:
-        return json.load(f)
+def get_firebase_settings() -> FirebaseSettings:
+    return load_env_file_on_settings(FirebaseSettings)
 
 
-class BaseFirestoreRepository(Generic[ModelType]):
-    def __init__(self, *,
-                 collection_path: str | tuple[str],
-                 model: Type[ModelType],
-                 client: AsyncClient = Depends(_get_async_client)):
-        """
-        Object with default methods to Create, Read, Update and Delete (CRUD) from a Firestore Collection.
-        """
-        self._client = client
-        self._model = model
-        self._path = collection_path if isinstance(collection_path, tuple) else tuple(collection_path.split("/"))
+class FirebaseService(IdentityProvider):
+    def __init__(self, settings: FirebaseSettings):
+        import firebase_admin
+        firebase_credentials = firebase_admin.credentials.Certificate(settings.credentials_file)  # TODO Refactor to GC library
+        self._client = firebase_admin.initialize_app(credential=firebase_credentials)
 
-    def _get_collection_reference(self) -> AsyncCollectionReference:
-        return self._client.collection(*self._path)
+    def get_current_user(self, required_roles: list[str] | None = None):
+        from firebase_admin import auth
 
-    def _get_document_reference(self, document_id: str) -> AsyncDocumentReference:
-        return self._client.document(*self._path, document_id)
+        def validate_token(credential: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False))) -> User:
+            if credential is None:
+                raise BearerAuthenticationNeededException()
+            try:
+                decoded_token = auth.verify_id_token(credential.credentials, self.client)
+            except Exception as err:
+                raise InvalidFirebaseAuthenticationException(error=err)
+            roles = []
+            if 'roles' in decoded_token.keys():
+                roles = decoded_token['roles']
+            if required_roles is not None:
+                for r in required_roles:
+                    if r not in roles:
+                        raise UnauthorizedException(required_roles)
+            user: User = User(uid=decoded_token['uid'], email=decoded_token['email'], roles=roles)
+            return user
 
-    async def get(self, document_id: str) -> ModelType | None:
-        snapshot = await self._get_document_reference(document_id).get()
-        return self._model(document_id=snapshot.id, **snapshot.to_dict()) if snapshot.exists else None
+        return validate_token
 
-    def add_callback(self, document_id: str, callback: Callable):
-        # TODO: Async client does not implement on_snapshot, we need to use the sync client
-        # return self._get_document_reference(document_id).on_snapshot(callback)
-        raise NotImplementedError
+    @property
+    def client(self):
+        return self._client
 
-    async def add(self, *, model: ModelType):
-        await self._get_document_reference(model.document_id).create(model.dict(exclude={"document_id"}))
-
-    @overload
-    async def update(self, *, model: ModelType):
-        ...
-
-    @overload
-    async def update(self, *, data: dict[str, Any], document_id: str):
-        ...
-
-    async def update(self, *,
-                     model: ModelType | None = None,
-                     data: dict[str, Any] | None = None,
-                     document_id: str | None = None):
-        if model is not None:
-            await self._get_document_reference(model.document_id).update(model.dict(exclude={"document_id"}))
-        elif data is not None and document_id is not None:
-            await self._get_document_reference(document_id).update(data)
-        else:
-            raise ValueError("Either model or (document_id, data) must be passed as argument")
-
-    async def delete(self, *, model: ModelType | None = None, document_id: str | None = None):
-        id_to_delete = document_id or (model.document_id if model else None)
-        if not id_to_delete:
-            raise ValueError("Either model or document_id must be passed as argument")
-        await self._get_document_reference(document_id).delete()
+    def configure_api(self, api: FastAPI):
+        # Include auth router
+        from app.common.controllers import firebase_routers
+        api.include_router(firebase_routers)

@@ -4,12 +4,15 @@ disable_existing_loggers: False
 formatters:
   simple:
     format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  cloud_run:
+    format: "%(name)-30s: %(message)s"
+    class: app.common.infra.gcp.cloud_logging.CloudRunJSONFormatter
 
 handlers:
   console:
     class: logging.StreamHandler
     level: DEBUG
-    formatter: simple
+    formatter: simple # use cloud_run to format logs on GCP
     stream: ext://sys.stdout
 
   info_file_handler:

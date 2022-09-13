@@ -8,14 +8,20 @@
 - [X] API Port configuration
 - [X] Log Configuration
 - [X] Database Configuration
-- [ ] ASYNC Database Configuration
+- [X] ASYNC Database Configuration
 - [X] Swagger Configuration
 - [X] JWT / Keycloak Integration
 - [X] CORS Configuration
+- [X] Google Firebase Authentication Integration
+- [X] Google Firestore Database Repository Integration
+- [X] Google Storage Integration
+- [X] Google Clour Run Integration
 - [X] Global Exception Management
-- [ ] DB Entity Generation
+- [X] DB Entity Generation
+- [X] SSE Support
 - [ ] Code generation using Templates
 - [X] Log to files integration
+- [X] Log to Cloud Run Google Cloud
 - [ ] Log to Database integration
 - [ ] Log to GrayLog integration
 - [ ] Log to Splunk integration
@@ -99,22 +105,39 @@ Refer to [this link](https://www.jetbrains.com/help/pycharm/poetry.html) to conf
 
 ## Running on local
 
-Start the uvicorn live server with the command:
+You can launch the uvicorn server programmatically running directly the main.py file.
 
+```shell
+python main.py
 ```
-uvicorn main:app --reload
+
+It is also possible to start the uvicorn live directly server with the command:
+
+```shell
+uvicorn main:api --reload
 ```
 
 - **_main_**: the file main.py (the Python "module").
 - **_app_**: the object created inside of main.py with the line app = FastAPI().
 - _**--reload**_: make the server restart after code changes. Only use for development.
 
-You can also launch the uvicorn server programmatically running directly the main.py file.
+## Run Tests with coverage
+You can run all test scenarios using:
+```
+python -m coverage run -m unittest
+```
+
+To display the coverage results:
 
 ```
-python main.py
+coverage report
 ```
 
+or with a nicer report as html page:
+
+```
+coverage html
+```
 ## Environment Configuration
 
 You can use Pydantic Settings to handle the settings or configurations for your application, with all the power of Pydantic models. The project uses Dependency Injection for managing dependencies across the application and easy mocking for testing.

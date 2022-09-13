@@ -2,10 +2,14 @@ from typing import Any, Optional, Dict, List
 
 from fastapi import HTTPException
 
-
 ##################################
 # Base HTTP Exception
 ##################################
+from pydantic import BaseModel
+
+
+class HTTPError(BaseModel):
+    detail: str
 
 
 class DevonHttpException(HTTPException):

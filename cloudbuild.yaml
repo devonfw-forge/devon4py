@@ -1,0 +1,42 @@
+# [START Backend Build]
+steps:
+  - name: gcr.io/cloud-builders/gsutil
+    args:
+      - cp
+      - 'gs://secrets/firebase.json'
+      - .
+    dir: .
+  - name: gcr.io/cloud-builders/gsutil
+    args:
+      - cp
+      - 'gs://secrets/PROD.env'
+      - .
+    dir: .
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '-t'
+      - >-
+        gcr.io/poc-cloudnative-capgemini/github.com/devonfw-forge/your_repo:$COMMIT_SHA
+      - .
+    dir: .
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - >-
+        gcr.io/poc-cloudnative-capgemini/github.com/devonfw-forge/your_repo:$COMMIT_SHA
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    args:
+      - run
+      - deploy
+      - your_cloud_run_service_name
+      - '--image'
+      - >-
+        gcr.io/poc-cloudnative-capgemini/github.com/devonfw-forge/your_repo:$COMMIT_SHA
+      - '--region'
+      - europe-southwest1
+    entrypoint: gcloud
+images:
+  - >-
+    gcr.io/poc-cloudnative-capgemini/github.com/devonfw-forge/your_repo:$COMMIT_SHA
+# [END Backend Build]

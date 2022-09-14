@@ -1,7 +1,11 @@
 from typing import Optional
 import uuid as uuid_pkg
+
+from pydantic import BaseModel
 from sqlmodel import SQLModel, Field
 from datetime import datetime
+
+from app.domain.todo_management.utils import get_current_time
 
 
 def new_uuid() -> uuid_pkg.UUID:
@@ -20,5 +24,12 @@ class BaseUUIDModel(SQLModel):
         index=True,
         nullable=False,
     )
-    updated_at: Optional[datetime] = Field(default_factory=datetime.now)
-    created_at: Optional[datetime] = Field(default_factory=datetime.now)
+    updated_at: Optional[datetime] = Field(default_factory=get_current_time)
+    created_at: Optional[datetime] = Field(default_factory=get_current_time)
+
+
+class BaseCamelModel(BaseModel):
+    class Config:
+        @classmethod
+        def alias_generator(cls, string: str) -> str:
+            return ''.join([string.split('_')[0].lower()] + [word.capitalize() for word in string.split('_')[1:]])

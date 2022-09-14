@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 from app.common import get_user
 from app.common.core.identity_provider import User
+from app.common.infra.gcp.firebase import get_account_info, get_firebase_settings, FirebaseSettings
 
 logger = logging.getLogger(__name__)
 
@@ -27,10 +28,10 @@ def set_user_admin(user: User = Depends(get_user())):
 
 @router.get("/login", description="Test Login endpoint that returns a Bearer token authenticating on Firebase "
                                   "Authentication service")
-def login(user: EmailPassword = Depends()):
+def login(user: EmailPassword = Depends(), firebase_config: FirebaseSettings = Depends(get_firebase_settings)):
     import requests
+    api_key = firebase_config.api_key
     res = requests.post(
-        "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key"
-        "=AIzaSyD3T5gpP1hu9FeV9E4g9ZNglqlov-iee9g",
+        f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={api_key}",
         json={"email": user.email, "password": user.password, "returnSecureToken": "true"})
     return res.json()

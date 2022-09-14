@@ -1,6 +1,5 @@
 import abc
-from typing import Protocol, Optional, List, Callable, Any
-
+from typing import  Optional, List
 from fastapi import FastAPI
 from pydantic import BaseModel
 

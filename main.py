@@ -12,4 +12,4 @@ if __name__ == "__main__":
     # import entities to init
     from app.domain.todo_management.models import *  # Type: ignore
     init_db_entities(get_db_settings())
-    uvicorn.run("app.api:api", host="0.0.0.0", port=get_global_settings().port, log_config=get_log_config())
+    uvicorn.run("app.api:api", host="localhost", port=get_global_settings().port, log_config=get_log_config(), reload=True)

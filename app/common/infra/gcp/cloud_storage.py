@@ -1,7 +1,6 @@
 import asyncio
 import datetime
 import functools
-import json
 import mimetypes
 from functools import lru_cache
 from typing import BinaryIO, ParamSpec, TypeVar, Callable, Awaitable
@@ -11,7 +10,7 @@ from pydantic import BaseSettings
 
 from app.common.core.configuration import load_env_file_on_settings
 from app.common.infra.gcp.firebase import get_account_info
-from app.domain.todo_management.utils import get_current_time
+from app.common.utils import get_current_time
 
 
 class BaseStorageSettings(BaseSettings):

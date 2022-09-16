@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from sqlmodel import SQLModel, Field
 from datetime import datetime
 
-from app.domain.todo_management.utils import get_current_time
+from app.common.utils import get_current_time
 
 
 def new_uuid() -> uuid_pkg.UUID:

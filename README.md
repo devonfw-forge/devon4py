@@ -1,5 +1,17 @@
 # devon4py
 
+## What is devon4py?
+
+devon4py is an incubator project within [devonfw](https://devonfw.com), Capgemini'sOpen Source initiative which specifies a standardized open source architecture blueprint for state of the art cloud native (micro-) services and multi-platform rich client applications based on open source best-of-breed technology stacks.
+
+devon4py provides a fully featured Python based solution for API service applications based on: 
+
+ - a scalable & easy to maintain template,
+ - Python development standardization,
+ - production ready for API applications and
+ - industrialized & standards based
+
+For more information, see [the presentation](devon4py.pdf).
 ## Roadmap
 
 - [X] Swagger / OpenAPI integration
@@ -177,4 +189,14 @@ Configure the logging properties in the **_logging.yaml_** file.
 You can find more information in the [logging](https://docs.python.org/3/library/logging.html#module-logging) documentation.
 
 ## Database Management
+
+TODO
+
+# License(s)
+
+Copyright 2022 Capgemini 
+
+The source code on this site is licensed under the Apache Public License 2.0. See [LICENSE.txt](LICENSE.txt) for details.
+
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a><br />The documentation (not the source code) available on this site is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
 

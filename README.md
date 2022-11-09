@@ -1,5 +1,7 @@
 # devon4py
 
+![devon4py](devon4py.png)
+
 ## What is devon4py?
 
 devon4py is an incubator project within [devonfw](https://devonfw.com), Capgemini'sOpen Source initiative which specifies a standardized open source architecture blueprint for state of the art cloud native (micro-) services and multi-platform rich client applications based on open source best-of-breed technology stacks.

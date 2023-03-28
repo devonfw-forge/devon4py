@@ -194,6 +194,12 @@ You can find more information in the [logging](https://docs.python.org/3/library
 
 TODO
 
+# Example Projects
+
+https://github.com/devonfw-forge/jump-the-queue-devon4py
+
+https://github.com/devonfw-forge/wayat-flutter-python-mvp
+
 # License(s)
 
 Copyright 2022 Capgemini 

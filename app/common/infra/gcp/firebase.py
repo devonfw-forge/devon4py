@@ -79,5 +79,5 @@ class FirebaseService(IdentityProvider):
 
     def configure_api(self, api: FastAPI):
         # Include auth router
-        from app.common.infra.gcp.controllers import auth_router
+        from app.common.infra.gcp.controllers.router import auth_router
         api.include_router(auth_router)

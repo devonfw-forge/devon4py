@@ -42,7 +42,7 @@ class KeycloakService(IdentityProvider):
         # Enable authentication layer to swagger endpoints
         self.client.add_swagger_config(api)
         # Include auth router
-        from app.common.infra.keycloak.controllers import auth_router
+        from app.common.infra.keycloak.controllers.router import auth_router
         api.include_router(auth_router)
 
     @property

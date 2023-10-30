@@ -20,7 +20,7 @@ class BaseSQLRepository(Generic[ModelType]):
         self.model = model
         self.session = session
 
-    async def get(self, *, uid: Union[UUID, str]) -> Optional[ModelType]:
+    async def get(self, *, uid: Union[UUID, str]) -> ModelType:
         response = await self.session.exec(
             select(self.model)
             .where(self.model.id == uid)

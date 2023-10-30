@@ -1,0 +1,16 @@
+{% extends "shared/_layout.html" %}
+{% block title %}Home - ToDo App{% endblock %}
+{% block main_content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 mt-5 d-none d-md-block" id="todo-form-container">
+            {% include 'todo/partials/todo_form.html' %}
+        </div>
+        <div class="col-md-6 mt-5 d-none d-md-block">
+            <div class="container" id="todo-list-container">
+                <div hx-get="/todo/list" hx-trigger="load"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,3 +1,4 @@
+import uuid
 from typing import List
 
 from fastapi import Depends
@@ -25,8 +26,8 @@ class TodoService:
         todo_dtos = map(parse_to_dto, raw_todos)
         return list(todo_dtos)
 
-    async def create_todo(self, create_req: CreateTodoRequest) -> TodoDto:
-        raw_new_todo = await self.todo_repo.create(description=create_req.description)
+    async def create_todo(self, description: str) -> TodoDto:
+        raw_new_todo = await self.todo_repo.create(description=description)
         todo_dto = parse_to_dto(raw_new_todo)
         self._notify_todo_added(todo_dto)
         return todo_dto
@@ -39,5 +40,5 @@ class TodoService:
         # Publish the new to_do as an event on the topic "todo_added"
         self._todo_event_publisher.publish(todo, "todo_added")
 
-    async def todo_done(self, todo: TodoID):
-        await self.todo_repo.todo_done(todo_id=todo.id)
+    async def todo_done(self, todo: uuid.UUID):
+        await self.todo_repo.todo_done(todo_id=todo)

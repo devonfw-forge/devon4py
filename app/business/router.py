@@ -10,4 +10,4 @@ all_router.include_router(todo_management_router, tags=["Todo Management"])
 
 @all_router.get("/")
 async def home_page_redirect(request: Request):
-    return RedirectResponse("/todo")
+    return RedirectResponse("/todos")

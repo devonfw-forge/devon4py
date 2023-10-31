@@ -1,0 +1,11 @@
+{% if todos|length %}
+{% for todo in todos %}
+<div id="todo_entry_{{todo.id}}" hx-trigger="click" hx-post="/todos/done/{{todo.id}}" hx-target="#todo-list-container" class="clickable lead">
+    <div class="card mb-2">
+        <div class="card-body" style="cursor:pointer">{{ todo.description }}</div>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<p>No ToDos are found ...</p>
+{% endif %}

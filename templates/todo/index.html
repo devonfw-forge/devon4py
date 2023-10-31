@@ -1,0 +1,24 @@
+{% extends "shared/_layout.html" %}
+{% block title %}Home - ToDo App{% endblock %}
+{% block main_content %}
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-6 mt-5 d-none d-md-block" id="todo-form-container">
+            {% include 'todo/partials/todo_form.html' %}
+        </div>
+    </div>
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-6 mt-5 d-none d-md-block">
+            <h1>Pending ToDos:</h1>
+            <div class="container" id="todo-list-container">
+                <div hx-get="/todos/pending" hx-trigger="load"></div>
+            </div>
+<!--            <br>-->
+<!--            <h1>Done ToDos:</h1>-->
+<!--            <div class="container" id="todo-list-container-done">-->
+<!--                <div hx-get="/todo/pending" hx-trigger="load"></div>-->
+<!--            </div>-->
+        </div>
+    </div>
+</div>
+{% endblock %}

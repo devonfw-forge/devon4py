@@ -1,0 +1,11 @@
+<form class="form-inline d-flex gap-4" id="todo-form" hx-post="/todos/add" hx-swap="innerHTML" hx-target="#todo-list-container">
+    <input type="text" class="form-control" name="description" placeholder="New To Do" required/>
+    <button class="btn btn-success"  type="submit">Add</button>
+</form>
+
+<script>
+    document.body.addEventListener('htmx:afterSwap', function(evt) {
+        const form = document.querySelector("#todo-form");
+        form.reset();
+    });
+</script>
